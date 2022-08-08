@@ -73,7 +73,7 @@
 			<ul class="list-group collapse" id="replyCollapse">
 				<li class="list-group-item text-bg-light border-success" 
 				th:if="${session.loginUser!=null}">
-					<form action="/reply/insert.do" method="post">
+					<form action="/reply/insert.do" method="post" enctype="multipart/form-data">
 						<p class="input-group input-group-sm mb-1">
 							<span class="input-group-text">글쓴이</span>
 							<input name="user.user_id" th:value="${session.loginUser?.user_id}" 
@@ -83,6 +83,10 @@
 							<span class="input-group-text">제목</span>
 							<input name="title"type="text" class="form-control">
 						</p>
+						<p class="input-group input-group-sm mb-1">
+							<input name="imgFile"type="file" class="form-control">
+						</p>
+						
 						<p class="input-group input-group-sm mb-1">
 							<span class="input-group-text">내용</span>
 							<textarea name="contents" class="form-control"></textarea>
@@ -109,6 +113,8 @@
 						      	<span th:text="${reply.reply_no}"></span>.
 						      	<span th:text="${reply.title}"></span>
 						      </div>
+						      <img alt="" th:src="@{/public/img/{fileName}(fileName=${reply.img_path})}" 
+						    	th:if=${reply.img_path!=null} height="100px">
 						      <div th:text="${reply.contents}"></div>	
 						    </div>
 						    <a class="badge bg-primary rounded-pill bi bi-hand-thumbs-up" 
