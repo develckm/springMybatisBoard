@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>게시글 리스트</title>
+</head>
+<body>
+	<header th:insert="headerNav"></header>
+	<main>
+		<h1 class="m-3 d-flex justify-content-between align-items-center">게시글 리스트
+			<a href="/board/insert.do" class="btn btn-sm btn-primary">게시글 등록</a>
+		</h1>
+		
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>no</th>
+					<th>글쓴이</th>
+					<th>타이틀</th>
+					<th>등록일</th>
+					<th>조회수</th>
+					<th>good</th>
+					<th>bad</th>
+					<th>댓글수</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="board : ${boardList}" >
+					<tr th:onclick="location.href='/board/detail/[[${board.board_no}]]'">
+						<td th:text="${board.board_no}"></td>
+						<td th:text="${board.user?.user_id}"></td>
+						<td th:text="${board.title}"></td>
+						<td th:text="${#dates.format(board.post_time,'yyyy-MM-dd hh:mm:ss')}"></td>
+						<td th:text="${board.views}"></td>
+						<td th:text="${board.good}"></td>
+						<td th:text="${board.bad}"></td>
+						<td th:text="${board.replys_size}"></td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		
+		
+	</main>
+	
+	
+</body>
+</html>

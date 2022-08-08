@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<nav aria-label="Page navigation example">
+	  <ul class="pagination">
+	    <li class="page-item" th:classappend="${(page==1)?'disabled':''}">
+	      <a class="page-link"  th:href="@{/user/list/1}"  aria-label="Previous">
+	        <span aria-hidden="true">&laquo;</span>
+	      </a>
+	    </li>
+	   	<li class="page-item" th:classappend="${(page==1)?'disabled':''}">
+	   		<a class="page-link" th:href="@{/user/list/{page}(page=${page-1})}">Previous</a>
+	    </li>
+	    
+	    <th:block th:each="n : ${#numbers.sequence(1,rowCount/row+((rowCount%row>0)?1:0))}">
+	    	<li th:classappend="${(page==n)?'active':''}" class="page-item">
+	    		<a class="page-link" th:href="@{/user/list/{page}(page=${n})}" th:text="${n}"></a>
+	    	</li>
+	    </th:block>
+	    <li class="page-item" th:classappend="${((rowCount/row+((rowCount%row>0)?1:0))==page)?'disabled':''}">
+	      	<a class="page-link" th:href="@{/user/list/{page}(page=${page+1})}">Next</a>
+	    </li>
+
+	    <li class="page-item"  th:classappend="${((rowCount/row+((rowCount%row>0)?1:0))==page)?'disabled':''}">
+	      <a class="page-link" th:href="@{/user/list/{page}(page=${rowCount/row+((rowCount%row>0)?1:0)})}" aria-label="Next">
+	        <span aria-hidden="true">&raquo;</span>
+	      </a>
+	    </li>
+	  </ul>
+	</nav>
+</html>

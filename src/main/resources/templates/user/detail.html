@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>유저 상세 페이지</title>
+</head>
+<body>
+	<header th:insert="/headerNav"></header>
+	<main class="container">
+		<h1 class="m-3 d-flex justify-content-between align-items-center">유저 상세</h1>
+		<form action="/user/update.do" method="post">
+			<div class="row mb-3 g-3 align-items-center">
+				<div class="col-auto">
+					아이디
+					<input name="user_id" type="hidden" th:value="${user.user_id}">
+				</div>	
+				<div class="col-auto">
+					<strong th:text="${user.user_id}"></strong>	
+				</div>	
+			</div>
+			
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPw" class="col-form-label">패스워드</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="pw" id="inputPw" class="form-control" aria-describedby="pwHelp" 
+			    th:value="${user.pw}">
+			  </div>
+			  <div class="col-auto">
+			    <span id="pwHelp" class="form-text">
+			      Must be 4-20 characters long.
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPw" class="col-form-label">이름</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="name" id="inputName" class="form-control" aria-describedby="nameHelp" 
+			    th:value="${user.name}">
+			  </div>
+			  <div class="col-auto">
+			    <span id="nameHelp" class="form-text">
+			      Must be 3-20 characters long.
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPhone" class="col-form-label">폰번호</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="phone" id="inputPhone" class="form-control" aria-describedby="phoneHelp" 
+			    th:value="${user.phone}">
+			  </div>
+			  <div class="col-auto">
+			    <span id="phoneHelp" class="form-text">
+			      Must be 000-0000-000 pattern
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputEmail" class="col-form-label">이메일</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="email" id="inputEmail" class="form-control" aria-describedby="emailHelp"
+			     th:value="${user.email}">
+			  </div>
+			  <div class="col-auto">
+			    <span id="emailHelp" class="form-text">
+			      Must be id@domain pattern
+			    </span>
+			  </div>
+			</div>
+			
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputBirth" class="col-form-label">생일</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="date" name="birth" id="inputBirth" class="form-control" 
+			    th:value="${#dates.format(user.birth,'yyyy-MM-dd')}">
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputSignup" class="col-form-label">가입일</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="datetime-local" name="signup" id="inputSignup" class="form-control" 
+			    th:value="${#dates.format(user.signup,'yyyy-MM-dd''T''HH:mm:ss')}"  readonly>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  	<button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#boarListCol">
+					유저가 작성한 Board List
+				</button>
+				<div class="collapse" id="boarListCol">
+					<ol class="list-group list-group-numbered" >
+					  <li class="list-group-item d-flex justify-content-between align-items-start" 
+					  th:each="board : ${user.boards}">
+					  	<th:block th:if=${board!=null}>
+						   	<div class="ms-2 me-auto">
+					      	<div class="fw-bold" th:text="${board.title}"></div>
+						     	<div th:text="${board.contents}"></div>
+						    </div>
+						    <span class="badge bg-secondary rounded-pill" th:text="${board.views}"></span>
+						    <span class="badge bg-primary rounded-pill" th:text="${board.good}"></span>
+							<span class="badge bg-danger rounded-pill" th:text="${board.bad}"></span>
+					  	</th:block>
+					  </li>
+					</ol>	
+				</div>
+			</div>		
+			<div class="row mb-3 g-3 align-items-center">
+				<div class="col-auto">
+					<button type="reset" class="btn btn-light">초기화</button>
+				</div>	
+				<div class="col-auto">
+					<button type="submit" class="btn btn-primary">제출</button>
+				</div>	
+				<div class="col-auto">
+					<a th:href="@{/user/delete/{user_id}(user_id=${user.user_id})}" 
+						class="btn btn-danger">삭제</a>
+				
+					<!-- <button type="button" class="btn btn-danger"
+						th:onclick="location.href='/user/delete/'+[[${user.user_id}]]"
+					>삭제</button> -->
+				</div>					
+			</div>
+		
+			
+		</form>
+	</main>
+</body>
+</html>

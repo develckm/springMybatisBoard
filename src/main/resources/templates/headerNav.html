@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="/bootstrap-5.2.0-dist/css/bootstrap.css">
+<!-- <script src="/bootstrap-5.2.0-dist/js/bootstrap.js"></script> -->
+<script th:src="@{/bootstrap-5.2.0-dist/js/bootstrap.bundle.js}"></script><!--popper.js를 포함  -->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">HOME</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/board/list/1">게시글</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user/list/1">회원관리</a>
+        </li>
+      </ul>
+     <div class="d-flex">
+     	<th:block th:if="${session.loginUser==null}">
+	     	<a class="btn btn-sm btn-success" href="/user/login.do">로그인</a> /
+	     	<a href="/user/signup.do" class="btn btn-sm btn-danger">회원가입</a>
+	     	
+     	</th:block>
+     	<th:block th:unless="${session.loginUser==null}">
+     		<a th:href="@{/user/detail/{user_id}(user_id=${session.loginUser.user_id})}" 
+     			class="btn btn-sm btn-outline-secondary">
+				<span th:text="${session.loginUser.name}"></span>
+				(<span th:text="${session.loginUser.user_id}"></span>)
+			</a> / 
+			<a href="/user/logout.do" class="btn btn-sm btn-danger">로그아웃</a>
+     	</th:block>
+     </div>	
+      
+    </div>
+  </div>
+</nav>
+<th:block  th:if="${session.msg!=null}">
+	<div class="modal" id="msgModal" tabindex="-1">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">시스템 메세지</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <p th:text="${session.msg}"></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<script th:inlin="javascript">
+		const msgModal = new bootstrap.Modal('#msgModal');
+		msgModal.show();
+	 	/*[[${#session.removeAttribute("msg")}]]*/
+	</script>
+</th:block>
+</html>

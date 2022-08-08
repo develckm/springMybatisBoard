@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>게시글 상세</title>
+</head>
+<body>
+	<header th:insert="/headerNav"></header>
+	<main class="container">
+		<h1 class="m-3">
+			<small th:text="${board.board_no}"></small>
+			<span th:text="${board.title}"></span>
+		</h1>
+		<p>
+			글쓴이 아이디 :<strong th:text="${board.user.user_id}"></strong> ,
+			이름 :<strong th:text="${board.user.name}"></strong>
+		</p>
+		<p>
+			글쓴이 이메일 :<strong th:text="${board.user.email}"></strong> ,
+			생일 :<strong th:text="${#dates.format(board.user.birth,'yyyy-MM-dd')}"></strong>
+		</p>
+		<p>
+			게시일 : <span th:text="${board.post_time}"></span>
+		</p>
+		<div class="mb-3 d-flex justify-content-between">
+			<div>
+				<a 
+			 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요!"
+				th:href="@{/board/update/good/{no}(no=${board.board_no})}" class="btn btn-primary">
+					<i class="bi bi-hand-thumbs-up"></i>				
+					<span th:text="${board.good}"></span>
+				</a> /
+				<a 
+			 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="싫어요!"
+				th:href="@{/board/update/bad/{no}(no=${board.board_no})}"  class="btn btn-danger">
+					<i class="bi bi-hand-thumbs-down"></i>				
+					 <span th:text="${board.bad}"></span>
+				</a> /
+					<i class="bi bi-eye" 
+					data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="조회수"
+					>
+						<span th:text="${board.views}"></span>
+					</i>				
+			</div>
+			<div th:if="${session.loginUser?.user_id==board.user.user_id}">
+				<a th:href="@{/board/update/{no}(no=${board.board_no})}" class="btn btn-success">
+					수정
+				</a>
+			</div>
+		</div>
+		<div>
+			<th:block th:each="boardImg : ${board.boardImgs}">
+				<img th:src="@{/public/img/{fileName}(fileName=${boardImg.img_path})}"
+				class="img-thumbnail" width="200" alt="게시글 이미지">
+			
+			</th:block>
+		</div>
+		
+		<div class="form-floating">
+		  <textarea class="form-control" placeholder="Leave a comment here" 
+		  style="height: 100px; resize: none; " th:text="${board.contents}" readonly></textarea>
+		</div>
+		<div class="m-3">
+		
+			<h2 class="d-flex justify-content-between">
+				<span>댓글 리스트
+					<small th:text="${board.replys?.size}"></small>  
+				</span>
+				<button  class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#replyCollapse">
+					토글
+				</button> 
+			</h2>
+			<ul class="list-group collapse" id="replyCollapse">
+				<li class="list-group-item text-bg-light border-success" 
+				th:if="${session.loginUser!=null}">
+					<form action="/reply/insert.do" method="post">
+						<p class="input-group input-group-sm mb-1">
+							<span class="input-group-text">글쓴이</span>
+							<input name="user.user_id" th:value="${session.loginUser?.user_id}" 
+								type="text" class="form-control">
+						</p>
+						<p class="input-group input-group-sm mb-1">
+							<span class="input-group-text">제목</span>
+							<input name="title"type="text" class="form-control">
+						</p>
+						<p class="input-group input-group-sm mb-1">
+							<span class="input-group-text">내용</span>
+							<textarea name="contents" class="form-control"></textarea>
+						</p>
+						<p class="mb-1">
+							<button type="reset" class="btn btn-sm btn-outline-warning">초기화</button>
+							<button type="submit" class="btn btn-sm btn-outline-primary">제출</button>
+							<input type="hidden" name="board_no" th:value="${board.board_no}">
+						</p>
+					</form>
+				</li>
+			
+				<th:block th:each="reply : ${board.replys}">
+				  	<th:block th:if="${session.loginUser?.user_id!=reply.user.user_id}">
+				  		<li class="list-group-item d-flex justify-content-between align-items-start">
+						    <div class="ms-2 me-auto">
+						      <div>
+						      	글쓴이 : <span th:text="${reply.user.user_id}"></span>			      	
+						      </div>
+						      <div>
+						      	등록일 : <span th:text="${#dates.format(reply.post_time,'yyyy-MM-dd HH:mm:ss')}"></span>
+						      </div>
+						      <div class="fw-bold">
+						      	<span th:text="${reply.reply_no}"></span>.
+						      	<span th:text="${reply.title}"></span>
+						      </div>
+						      <div th:text="${reply.contents}"></div>	
+						    </div>
+						    <a class="badge bg-primary rounded-pill bi bi-hand-thumbs-up" 
+						    	th:text="${reply.good}" th:href="@{/reply/update/good/{no}(no=${reply.reply_no})}">
+						    </a>
+						    &nbsp;
+						    <a class="badge bg-danger rounded-pill bi bi-hand-thumbs-down" 
+						    	th:text="${reply.bad}" th:href="@{/reply/update/good/{no}(no=${reply.reply_no})}">
+						    </a>
+				  		</li>
+				  	</th:block>
+				  	<th:block th:unless="${session.loginUser?.user_id!=reply.user.user_id}">
+				  		<li class="list-group-item">
+					  		<form action="/reply/update.do" method="post">
+					  			<p class="input-group input-group-sm mb-1">
+									<span class="input-group-text">no</span>
+									<input name="reply_no" th:value="${reply.reply_no}" 
+										type="text" class="form-control" readonly>
+					  			
+									<span class="input-group-text">글쓴이</span>
+									<input name="user.user_id" th:value="${reply.user.user_id}" 
+										type="text" class="form-control" readonly>
+								</p>
+								<div class="mb-1 d-flex justify-content-between">
+									<span>등록일 : <th:block th:text="${#dates.format(reply.post_time,'yyyy-MM-dd HH:mm:ss')}"></th:block></span>
+									<div>
+										<span class="bi bi-hand-thumbs-up" th:text="${reply.good}"></span>
+										<span class="bi bi-hand-thumbs-down" th:text="${reply.bad}"></span>
+									</div>						
+								</div>
+								<p class="input-group input-group-sm mb-1">
+									<span class="input-group-text">제목</span>
+									<input name="title"type="text" class="form-control" th:value="${reply.title}">
+								</p>
+								<p class="input-group input-group-sm mb-1">
+									<span class="input-group-text">내용</span>
+									<textarea name="contents" class="form-control" th:text="${reply.contents}"></textarea>
+								</p>
+								<p class="mb-1">
+									<button type="reset" class="btn btn-sm btn-outline-warning">초기화</button>
+									<a th:href="@{/reply/delete/{no}/{boardNo}/{id}
+												(no=${reply.reply_no},boardNo=${board.board_no},id=${reply.user.user_id})}"
+										class="btn btn-sm btn-outline-danger"									
+									>삭제</a>
+									<button type="submit" class="btn btn-sm btn-outline-primary">제출</button>
+									<input type="hidden" name="board_no" th:value="${board.board_no}">
+								</p>
+					  		</form>
+				  		</li>
+				  	</th:block>
+				</th:block>
+			</ul>
+		</div>
+		
+	</main>
+<script>
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+</script>	
+	
+</body>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
+<mapper namespace="com.acon.board.mapper.UserMapper">
+<!-- 로그인, 리스트(패이징), 상세, 글쓴이력 상세,회원가입(등록),개인정보수정(수정) -->
+	<resultMap type="User" id="UserMap">
+		<id column="user_id" property="user_id"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+		<result column="email" property="email"/>
+		<result column="birth" property="birth"/>
+		<result column="signup" property="signup"/>
+		<result column="pw" property="pw"/>
+		<!--1:N JOIN 일때 반환하는 type을 list로 지정할 수 있다.  -->
+		<collection property="boards" javaType="java.util.ArrayList" ofType="Board" >
+			<id column="board_no" property="board_no"/>
+			<result column="title" property="title"/>
+			<result column="contents" property="contents"/>
+			<result column="post_time" property="post_time"/>
+			<result column="good" property="good"/>
+			<result column="bad" property="bad"/>
+			<result column="views" property="views"/>
+			<!-- <association property="user">
+				<id  column="user_id" property="user_id"/>
+			</association> -->
+		</collection>
+	</resultMap>
+	<select id="selectOne" resultMap="UserMap" >
+		SELECT * FROM 
+			USER u LEFT JOIN BOARD b  
+			ON u.user_id=b.user_id
+			WHERE u.user_id=#{userId}
+	</select>
+	<select id="selectPageAll" resultType="User">
+		SELECT *
+			FROM USER 
+				ORDER BY user_id 
+				LIMIT #{startRow},#{pageSize}
+	</select>
+	<select id="selectPageAllCount" resultType="int">
+		SELECT COUNT(*) FROM USER 
+	</select>
+	
+	
+	<select id="selectPwOne" resultType="User" >
+		SELECT * FROM USER WHERE user_id=#{userId} AND pw=#{pw}
+	</select>
+	<update id="updateOne" parameterType="User">
+		UPDATE USER SET 
+			name=#{name},
+			pw=#{pw},
+			phone=#{phone},
+			email=#{email},
+			birth=#{birth}
+			WHERE user_id=#{user_id}
+	</update>
+	<insert id="insertOne" parameterType="User">
+		INSERT INTO USER
+			(user_id,name,pw,phone,email,birth) VALUES 
+			(#{user_id},#{name},#{pw},#{phone},#{email},#{birth})
+	</insert>
+	<delete id="deleteOne" parameterType="String">
+		DELETE FROM USER WHERE user_id=#{userId}
+	</delete>		
+</mapper>
+
+
+
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
+<mapper namespace="com.acon.board.mapper.BoardImgMapper">
+	<insert id="insertOne" parameterType="BoardImg">
+		INSERT INTO BOARD_IMG (board_no,img_path) 
+					VALUES (#{board_no},#{img_path})
+	</insert>
+
+</mapper>

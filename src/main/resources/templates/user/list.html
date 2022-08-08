@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header th:insert="/headerNav"></header>
+
+	<main class="container">
+		<h1 class="m-3 d-flex justify-content-between align-items-center">
+			<span> 유저 리스트 </span>
+			<a href="/user/insert.do" class="small btn btn-secondary">등록</a>
+		</h1>
+		<p>
+			페이지 : 
+			<span class="badge text-bg-success" th:text="${page}"></span> /
+			<span class="badge text-bg-primary" th:text="${rowCount}"></span>
+		</p>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>아이디</th>
+					<th>이름</th>
+					<th>폰</th>
+					<th>이메일</th>
+					<th>나이</th>
+					<th>가입일</th>
+					<th>상세(수정)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user:${userList}">
+					<td th:text="${user.user_id}"></td>
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.phone}"></td>
+					<td th:text="${user.email}"></td>
+					<td th:text="${#dates.year(#dates.createNow())} - ${#dates.year(user.birth)}"></td>
+					<td th:text="${#dates.format(user.signup,'yyyy-MM-dd')}"></td>
+					<td>
+						<a th:href="@{/user/detail/{user_id}(user_id=${user.user_id})}">
+							상세보기
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="d-flex justify-content-center" th:insert="/paging"></div>
+		<hr>
+		<div class="d-flex justify-content-center" th:insert="/pagination">
+				
+		</div>
+	</main>
+	
+</body>
+</html>

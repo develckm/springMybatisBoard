@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>회원 가입 페이지</title>
+<script type="text/javascript" th:src="@{/public/js/user/insert.js}" defer="defer"></script>
+</head>
+<body>
+	<header th:insert="/headerNav"></header>
+	<main class="container">
+		<h1 class="m-3">회원가입</h1>
+		<form action="/user/signup.do" method="post" name="insertForm">
+			<div class=" row mb-3 g-3 align-items-center">
+				<div class="col-auto">
+					아이디
+				</div>	
+				<div class="col-auto">
+					<input name="user_id" type="text" class="form-control" aria-describedby="idHelp">				    
+				</div>
+				<div class="col-auto">
+    			    <span id="idHelp" class="col-auto form-text">
+				      Must be 4-20 characters long.
+				    </span>
+				    <span class="valid-feedback">
+			     	 	사용 가능한 아이디
+				    </span>
+				   	<span class="invalid-feedback">
+			     	 	중복된 아이디(4글자 이상 입력)
+				    </span>
+				</div>				
+			</div>
+			
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPw" class="col-form-label">패스워드</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="pw" id="inputPw" class="form-control" aria-describedby="pwHelp">
+			  </div>
+			  <div class="col-auto">
+			    <span id="pwHelp" class="form-text">
+			      Must be 4-20 characters long.
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPw" class="col-form-label">이름</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="name" id="inputName" class="form-control" aria-describedby="nameHelp">
+			  </div>
+			  <div class="col-auto">
+			    <span id="nameHelp" class="form-text">
+			      Must be 3-20 characters long.
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputPhone" class="col-form-label">폰번호</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="phone" id="inputPhone" class="form-control" aria-describedby="phoneHelp">
+			  </div>
+			  <div class="col-auto">
+			    <span id="phoneHelp" class="form-text">
+			      Must be 000-0000-000 pattern
+			    </span>
+			  </div>
+			</div>
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputEmail" class="col-form-label">이메일</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="text" name="email" id="inputEmail" class="form-control" aria-describedby="emailHelp">
+			  </div>
+			  <div class="col-auto">
+			    <span id="emailHelp" class="form-text">
+			      Must be id@domain pattern
+			    </span>
+			  </div>
+			</div>
+			
+			<div class="row mb-3 g-3 align-items-center">
+			  <div class="col-auto">
+			    <label for="inputBirth" class="col-form-label">생일</label>
+			  </div>
+			  <div class="col-auto">
+			    <input type="date" name="birth" id="inputBirth" class="form-control">
+			  </div>
+			</div>
+					
+			<div class="row mb-3 g-3 align-items-center">
+				<div class="col-auto">
+					<button type="reset" class="btn btn-light">초기화</button>
+				</div>	
+				<div class="col-auto">
+					<button type="submit" class="btn btn-primary">제출</button>
+				</div>	
+			</div>
+		</form>
+	</main>
+</body>
+</html>

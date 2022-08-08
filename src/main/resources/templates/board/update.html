@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>게시글 수정</title>
+</head>
+<body>
+	<header th:insert="/headerNav"></header>
+	<main class="container">
+		<h1 class="m-3">게시글 수정</h1>
+		<form action="/board/update.do" method="post">
+			<p class="mb-3 mt-3 input-group" >
+				<small class="input-group-text" th:text="${board.board_no}"></small>
+				<small class="input-group-text">제목</small>
+				<input name="title" class="form-control" type="text" th:value="${board.title}">
+			</p>
+			<p>
+				글쓴이 아이디 :<strong th:text="${board.user.user_id}"></strong> ,
+				이름 :<strong th:text="${board.user.name}"></strong>
+			</p>
+			<p>
+				글쓴이 이메일 :<strong th:text="${board.user.email}"></strong> ,
+				생일 :<strong th:text="${#dates.format(board.user.birth,'yyyy-MM-dd')}"></strong>
+			</p>
+			<p>
+				게시일 : <span th:text="${board.post_time}"></span>
+			</p>
+			<p>
+				<i class="bi bi-hand-thumbs-up"></i>				
+				<span th:text="${board.good}"></span>
+			
+				<i class="bi bi-hand-thumbs-down"></i>				
+				 <span th:text="${board.bad}"></span>		 
+				<i class="bi bi-eye" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="조회수">
+					<span th:text="${board.views}"></span>
+				</i>				
+			</p>
+			<div class="input-group mb-3">
+				<span  class="input-group-text">내용</span>
+				<textarea  name="contents" class="form-control" placeholder="Leave a comment here" 
+			 	style="height: 100px; resize: none; " th:text="${board.contents}"></textarea>
+			</div>
+			<p>
+				<button type="reset" class="btn btn-outline-warning">초기화</button>
+				<a th:href="@{/board/delete/{no}/{userId}(no=${board.board_no},userId=${board.user.user_id})}" 
+				class="btn btn-outline-danger">삭제</a>	
+				<button class="btn btn-outline-primary">수정</button>
+				<input type="hidden" name="user.user_id" th:value="${board.user.user_id}">
+				<input type="hidden" name="board_no" th:value="${board.board_no}">
+			</p>
+		</form>
+	</main>
+	
+</body>
+</html>

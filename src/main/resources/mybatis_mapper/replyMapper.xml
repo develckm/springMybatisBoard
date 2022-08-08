@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
+<mapper namespace="com.acon.board.mapper.ReplyMapper">
+	<insert id="insertOne" parameterType="Reply">
+		INSERT INTO REPLY 
+			(title,contents,img_path,board_no,user_id) 
+			VALUES 
+			(#{title},#{contents},#{img_path},#{board_no},#{user.user_id})
+	</insert>
+	<update id="updateOne" parameterType="Reply">
+		UPDATE REPLY SET
+			title=#{title},
+			contents=#{contents},
+			img_path=#{img_path}
+			WHERE reply_no=#{reply_no}
+	</update>
+	<update id="updateGood" parameterType="int">
+		UPDATE REPLY SET
+			good=good+1
+			WHERE reply_no=#{replyNo}
+	</update>
+	<update id="updateBad" parameterType="int">
+		UPDATE REPLY SET
+			bad=bad+1
+			WHERE reply_no=#{replyNo}
+	</update>
+	<delete id="deleteOne" parameterType="int">
+		DELETE FROM REPLY WHERE reply_no=#{replyNo}
+	</delete>
+
+</mapper>
