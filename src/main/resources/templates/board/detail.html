@@ -170,8 +170,7 @@
 								</p>
 								<p class="mb-1">
 									<button type="reset" class="btn btn-sm btn-outline-warning">초기화</button>
-									<a th:href="@{/reply/delete/{no}/{boardNo}/{id}
-												(no=${reply.reply_no},boardNo=${board.board_no},id=${reply.user.user_id})}"
+									<a th:href="@{/reply/delete/{no}(no=${reply.reply_no})}"
 										class="btn btn-sm btn-outline-danger"									
 									>삭제</a>
 									<button type="submit" class="btn btn-sm btn-outline-primary">제출</button>

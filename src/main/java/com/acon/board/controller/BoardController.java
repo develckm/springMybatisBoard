@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.acon.board.dto.Board;
 import com.acon.board.dto.BoardImg;
+import com.acon.board.dto.Reply;
 import com.acon.board.dto.User;
 import com.acon.board.mapper.BoardImgMapper;
 import com.acon.board.mapper.BoardMapper;
@@ -165,11 +166,10 @@ public class BoardController {
 	public String delete(@PathVariable int boardNo
 						,@PathVariable String userId,
 						@SessionAttribute(name = "loginUser",required = false) User loginUser) {
-		
 		if(loginUser!=null && loginUser.getUser_id().equals(userId)) {
 			int delete=0;
-			try {
-				delete=boardMapper.deleteOne(boardNo);
+			try {				
+				delete=boardService.removeBorad(boardNo);
 			} catch (Exception e) {e.printStackTrace();}
 			if(delete>0) {
 				return "redirect:/board/list/1";			

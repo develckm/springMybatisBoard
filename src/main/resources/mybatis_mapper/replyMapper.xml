@@ -2,6 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
 <mapper namespace="com.acon.board.mapper.ReplyMapper">
+	<select id="selectOne" resultType="Reply" parameterType="int">
+		SELECT *,user_id 'user.user_id' FROM REPLY 
+		WHERE reply_no=#{replyNo}
+	</select>
+	<select id="selectBoardNo" resultType="Reply" parameterType="int">
+		SELECT *,user_id 'user.user_id' FROM REPLY 
+		WHERE board_no=#{boardNo}
+	</select>
+	
+	<select id="selectUserId" 
+	resultType="Reply"
+	parameterType="String">
+		SELECT *,user_id 'user.user_id' FROM REPLY 
+		WHERE user_id=#{userId}
+	</select>
+	
 	<insert id="insertOne" parameterType="Reply">
 		INSERT INTO REPLY 
 			(title,contents,img_path,board_no,user_id) 

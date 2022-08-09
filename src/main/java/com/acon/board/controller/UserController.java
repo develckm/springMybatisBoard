@@ -19,6 +19,7 @@ import com.acon.board.dto.IdCheck;
 import com.acon.board.dto.Paging;
 import com.acon.board.dto.User;
 import com.acon.board.mapper.UserMapper;
+import com.acon.board.service.UserService;
 import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
 
 @Controller
@@ -28,6 +29,10 @@ public class UserController {
 	@Autowired
 	private UserMapper userMapper;
 	// 로그인, 회원 관리 리스트(패이징), 상세, 글쓴이력 상세,회원가입(등록),개인정보수정(수정)
+	
+	@Autowired
+	private UserService userService;
+	
 	@GetMapping("/list/{page}")
 	public String list(@PathVariable int page, Model  model) {
 		int row=7;
@@ -68,7 +73,7 @@ public class UserController {
 	public String delete(@PathVariable String userId) {
 		int delete=0;
 		try {
-			delete=userMapper.deleteOne(userId);			
+			delete=userService.removeUser(userId);			
 		}catch (Exception e) {e.printStackTrace();}
 		if(delete>0) {
 			return "redirect:/user/list/1";

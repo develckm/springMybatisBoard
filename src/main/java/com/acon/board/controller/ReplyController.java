@@ -101,23 +101,29 @@ public class ReplyController {
 			return "redirect:/user/login.do";			
 		}
 	}
-	@GetMapping("/delete/{replyNo}/{boardNo}/{userId}")
+	@GetMapping("/delete/{replyNo}")
 	public String delete(
 			@PathVariable int replyNo,
-			@PathVariable int boardNo,
-			@PathVariable String userId,
 			@SessionAttribute(required = false) User loginUser,
-			HttpSession session,
-			Model model) {
-		if(loginUser!=null&& loginUser.getUser_id().equals(userId)) {
+			HttpSession session) {
+		Reply reply=replyMapper.selectOne(replyNo);
+		System.out.println(reply);
+		if(loginUser!=null&& loginUser.getUser_id().equals(reply.getUser().getUser_id())) {
 			int delete=0;
-			delete=replyMapper.deleteOne(replyNo);
+			try {
+				if(reply.getImg_path()!=null) {
+					File file=new File(savePath+"/"+reply.getImg_path());
+					boolean del=file.delete();
+					System.out.println("댓글 이미지 삭제 :"+del);
+				}
+				delete=replyMapper.deleteOne(replyNo);
+			} catch (Exception e) {e.printStackTrace();}
 			if(delete>0) {
 				session.setAttribute("msg", "댓글 삭제 성공!");
 			}else {
 				session.setAttribute("msg", "댓글 삭제 실패!");
 			}
-			return "redirect:/board/detail/"+boardNo;			
+			return "redirect:/board/detail/"+reply.getBoard_no();			
 		}else {
 			return "redirect:/user/login.do";			
 		}
