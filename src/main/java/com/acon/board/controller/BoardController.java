@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +44,10 @@ public class BoardController {
 
 	@Autowired
 	private BoardService boardService;
-	
 	@GetMapping("/list/{page}")
-	public String list(@PathVariable int page,Model model) {
+	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
 		List<Board> boardList=boardMapper.selectPageAll();
+		System.out.println(savePath);
 		System.out.println(boardList);
 		model.addAttribute(boardList);
 		return "/board/list";
