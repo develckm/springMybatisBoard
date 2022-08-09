@@ -70,9 +70,10 @@
 					토글
 				</button> 
 			</h2>
-			<ul class="list-group collapse" id="replyCollapse">
+			<ul class="list-group collapse show" id="replyCollapse">
 				<li class="list-group-item text-bg-light border-success" 
 				th:if="${session.loginUser!=null}">
+<!--///////////////////////////////////// 리플 등록 폼 ///////////////////////////////////////////////////////////////// -->				
 					<form action="/reply/insert.do" method="post" enctype="multipart/form-data">
 						<p class="input-group input-group-sm mb-1">
 							<span class="input-group-text">글쓴이</span>
@@ -84,9 +85,9 @@
 							<input name="title"type="text" class="form-control">
 						</p>
 						<p class="input-group input-group-sm mb-1">
+							<span class="input-group-text">사진</span>
 							<input name="imgFile"type="file" class="form-control">
 						</p>
-						
 						<p class="input-group input-group-sm mb-1">
 							<span class="input-group-text">내용</span>
 							<textarea name="contents" class="form-control"></textarea>
@@ -101,6 +102,7 @@
 			
 				<th:block th:each="reply : ${board.replys}">
 				  	<th:block th:if="${session.loginUser?.user_id!=reply.user.user_id}">
+<!--///////////////////////////////////// 로그인 안된 리플 ///////////////////////////////////////////////////////////////// -->				
 				  		<li class="list-group-item d-flex justify-content-between align-items-start">
 						    <div class="ms-2 me-auto">
 						      <div>
@@ -113,8 +115,10 @@
 						      	<span th:text="${reply.reply_no}"></span>.
 						      	<span th:text="${reply.title}"></span>
 						      </div>
-						      <img alt="" th:src="@{/public/img/{fileName}(fileName=${reply.img_path})}" 
-						    	th:if=${reply.img_path!=null} height="100px">
+						      <div th:if="${reply.img_path!=null}">
+						      	<img alt="댓글 이미지" class="img-thumbnail"  style="height:50px; width:100%; object-fit: cover;"
+						      	th:src="@{/public/img/{file}(file=${reply.img_path})}">
+						      </div>
 						      <div th:text="${reply.contents}"></div>	
 						    </div>
 						    <a class="badge bg-primary rounded-pill bi bi-hand-thumbs-up" 
@@ -127,8 +131,9 @@
 				  		</li>
 				  	</th:block>
 				  	<th:block th:unless="${session.loginUser?.user_id!=reply.user.user_id}">
+<!--///////////////////////////////////// 로그인된 유저의 리플 ///////////////////////////////////////////////////////////////// -->				
 				  		<li class="list-group-item">
-					  		<form action="/reply/update.do" method="post">
+					  		<form action="/reply/update.do" method="post" enctype="multipart/form-data">
 					  			<p class="input-group input-group-sm mb-1">
 									<span class="input-group-text">no</span>
 									<input name="reply_no" th:value="${reply.reply_no}" 
@@ -149,6 +154,16 @@
 									<span class="input-group-text">제목</span>
 									<input name="title"type="text" class="form-control" th:value="${reply.title}">
 								</p>
+								<div class="mb-1" th:if="${reply.img_path!=null}">
+									<img alt="댓글 이미지"  class="img-thumbnail"  style="height:50px; width:100%; object-fit: cover;"
+									th:src="@{/public/img/{file}(file=${reply.img_path})}">
+								</div>
+								<p class="input-group input-group-sm mb-1">
+									<span class="input-group-text">사진</span>
+									<input name="imgFile"type="file" class="form-control">
+								</p>
+								
+								
 								<p class="input-group input-group-sm mb-1">
 									<span class="input-group-text">내용</span>
 									<textarea name="contents" class="form-control" th:text="${reply.contents}"></textarea>
@@ -161,6 +176,7 @@
 									>삭제</a>
 									<button type="submit" class="btn btn-sm btn-outline-primary">제출</button>
 									<input type="hidden" name="board_no" th:value="${board.board_no}">
+									<input type="hidden" name="img_path" th:value="${reply.img_path}">
 								</p>
 					  		</form>
 				  		</li>
@@ -173,6 +189,10 @@
 <script>
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+//replyCollapse
+/* const bsCollapse = new bootstrap.Collapse('#replyCollapse');
+bsCollapse.show(); */
+
 </script>	
 	
 </body>
