@@ -1,6 +1,8 @@
 package com.acon.board.controller;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,7 +50,6 @@ public class BoardController {
 	@GetMapping("/list/{page}")
 	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
 		List<Board> boardList=boardMapper.selectPageAll();
-		System.out.println(savePath);
 		System.out.println(boardList);
 		model.addAttribute(boardList);
 		return "/board/list";

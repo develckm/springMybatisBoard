@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.acon.board.dto.IdCheck;
 import com.acon.board.dto.Paging;
@@ -70,10 +71,12 @@ public class UserController {
 		}
 	}
 	@GetMapping("/delete/{userId}")
-	public String delete(@PathVariable String userId) {
+	public String delete(
+			@PathVariable String userId
+			) {
 		int delete=0;
 		try {
-			delete=userService.removeUser(userId);			
+			delete=userService.removeUser(userId);
 		}catch (Exception e) {e.printStackTrace();}
 		if(delete>0) {
 			return "redirect:/user/list/1";

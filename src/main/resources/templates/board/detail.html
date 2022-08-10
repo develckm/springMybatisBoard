@@ -155,8 +155,31 @@
 									<input name="title"type="text" class="form-control" th:value="${reply.title}">
 								</p>
 								<div class="mb-1" th:if="${reply.img_path!=null}">
-									<img alt="댓글 이미지"  class="img-thumbnail"  style="height:50px; width:100%; object-fit: cover;"
-									th:src="@{/public/img/{file}(file=${reply.img_path})}">
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-light" data-bs-toggle="modal"
+										style="padding: 0" 
+										th:data-bs-target="'#replyImgModal'+${reply.reply_no}">
+										<img alt="댓글 이미지"  class="img-thumbnail" 
+										 style="height:112px; width:112px; object-fit: cover;"
+										th:src="@{/public/img/{file}(file=${reply.img_path})}">
+									</button>			
+									<!-- Modal -->
+									<div class="modal fade"
+										th:id="'replyImgModal'+${reply.reply_no}" >
+									  <div class="modal-dialog modal-fullscreen-sm-down">
+									    <div class="modal-content" 
+									    style="background-color: rgba(255,255,255,0)">
+									      <div class="modal-header" style="border: none">
+									        <button type="button" 
+									        class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									      </div>
+									      <div class="modal-body">
+	       									<img alt="댓글 이미지"  class="img-thumbnail"  style="width:100%;"
+											th:src="@{/public/img/{file}(file=${reply.img_path})}">  
+									      </div>
+									    </div>
+									  </div>
+									</div>							
 								</div>
 								<p class="input-group input-group-sm mb-1">
 									<span class="input-group-text">사진</span>
