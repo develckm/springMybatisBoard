@@ -26,6 +26,7 @@ public class BoardService {
 	private ReplyMapper replyMapper;
 	@Value("${spring.servlet.multipart.location}")
 	String savePath;
+		
 	public int removeBorad(int boardNo) throws Exception{
 		int remove=0;
 		//보드를 참조하는 리플의 이미지를 삭제하기위해 리플 리스트를 검색 
@@ -71,10 +72,34 @@ public class BoardService {
 		return regist;
 	}
 	
-	public Board readBoardUpdateViews(int boardNo) {
+	public Board readBoardUpdateViews(int boardNo)  throws Exception{
 		boardMapper.updateViews(boardNo);
 		return boardMapper.selectOne(boardNo);
 	}
+	//@Transactional : 함수 내부의 db 실행을 한 트랙젝션으로 보고 중간에 실패시 db 실행을 취소 (roll back);
+	@Transactional
+	public int modifyBoardRemoveBoardImg(Board board,int[] boardImgNos) throws Exception{
+		int modify=0;
+		if(boardImgNos!=null) { //선택한 삭제될 board_img.board_img_no
+			for(int no : boardImgNos) {
+				BoardImg boardImg=boardImgMapper.selectOne(no);
+				File f=new File(savePath+"/"+boardImg.getImg_path());
+				System.out.println("board의 이미지 파일 삭제: "+f.delete());
+				int removeBoardImg=boardImgMapper.deleteOne(no);
+				System.out.println("board의 Board_img 삭제: "+removeBoardImg);
+			}			
+		}
+		if(board.getBoardImgs()!=null) { //이미지가 1개 이상 저장되면 null 이 아니다.
+			for(BoardImg boardImg : board.getBoardImgs()) {
+				int registBoardImg=boardImgMapper.insertOne(boardImg);
+				System.out.println("board의 Board_img 등록 :"+registBoardImg);
+			}
+		}
+		modify=boardMapper.updateOne(board);
+		return modify;
+	}
+	
+	
 	
 }
 

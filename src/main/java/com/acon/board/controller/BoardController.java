@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -19,7 +20,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,18 +36,21 @@ import com.acon.board.service.BoardService;
 
 @Controller
 @RequestMapping("/board")
-public class BoardController {
+public class BoardController {	
+	//board > board_img 의 수를 5개로 제한
+	private final static int BOARD_IMG_LIMIT=5; 
+	
 	//application.properties 의 설정 경로 받아오기 
 	@Value("${spring.servlet.multipart.location}") //파일이 임시저장되는 경로+파일을 저장할 경로
 	private String savePath;
-	
-//	@Value("${user.home}")
-//	private String root;
 	
 	//mybatis 컨테이너(sqlSessionFactory)가 의존성 주입
 	@Autowired
 	private BoardMapper boardMapper;
 
+	@Autowired
+	private BoardImgMapper boardImgMapper;
+	
 	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
@@ -56,10 +62,18 @@ public class BoardController {
 	}
 	@GetMapping("/detail/{boardNo}")
 	public String detail(@PathVariable int boardNo,Model model) {
-		Board board=boardService.readBoardUpdateViews(boardNo);
+		Board board=null;
+		try {
+			board = boardService.readBoardUpdateViews(boardNo);
+		} catch (Exception e) {e.printStackTrace();}
+		
 		System.out.println(board);
-		model.addAttribute(board);
-		return "/board/detail";
+		if(board!=null) {
+			model.addAttribute(board);
+			return "/board/detail";			
+		}else {
+			return "redirect:/board/list/1";
+		}
 	}
 	@GetMapping("/update/good/{boardNo}")
 	public String updateGood(@PathVariable int boardNo) {
@@ -145,13 +159,42 @@ public class BoardController {
 		}
 	}
 	@PostMapping("/update.do")
-	public String update(Board board,HttpSession session) {
+	public String update(
+			Board board,
+			@RequestParam(name = "boardImgNo",required = false) int [] boardImgNos,
+			@RequestParam(name = "imgFile", required = false) MultipartFile[]imgFiles,
+			HttpSession session) {
 		int update=0;
 		Object loginUser_obj=session.getAttribute("loginUser");
+		System.out.println(Arrays.toString(boardImgNos)); //삭제할 이미지 번호들
+		System.out.println(Arrays.toString(imgFiles)); //등록할 이미지 파일 (blob)
 		System.out.println(board);
 		if(loginUser_obj!=null && ((User)loginUser_obj).getUser_id().equals(board.getUser().getUser_id()))  {
 			try {
-				update=boardMapper.updateOne(board);
+				int boardImgCount=boardImgMapper.selectCountBoardNo(board.getBoard_no()); //3개가 등록되어 있다면..
+				int insertBoardImgLength= BOARD_IMG_LIMIT-boardImgCount+( (boardImgNos!=null)?boardImgNos.length:0 );
+				//0 
+				if(imgFiles!=null && insertBoardImgLength>0) {
+					List<BoardImg> boardImgs=new ArrayList<BoardImg>();
+					for(MultipartFile imgFile : imgFiles) {
+						
+						String[]types=imgFile.getContentType().split("/");
+						if(types[0].equals("image")) {
+							String newFileName="board_"+System.nanoTime()+"."+types[1];
+							Path path=Paths.get(savePath+"/"+newFileName);
+							imgFile.transferTo(path);
+							BoardImg boardImg=new BoardImg();
+							boardImg.setBoard_no(board.getBoard_no());
+							boardImg.setImg_path(newFileName);
+							boardImgs.add(boardImg);
+							if(--insertBoardImgLength == 0) break; //이미지 수가 5개면 반복문 종료
+						}
+					}
+					if(boardImgs.size()>0) {
+						board.setBoardImgs(boardImgs);
+					}
+				}
+				update=boardService.modifyBoardRemoveBoardImg(board, boardImgNos);
 			} catch (Exception e) {e.printStackTrace();}
 			
 			if(update>0) {

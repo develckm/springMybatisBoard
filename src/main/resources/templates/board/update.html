@@ -8,7 +8,7 @@
 	<header th:insert="/headerNav"></header>
 	<main class="container">
 		<h1 class="m-3">게시글 수정</h1>
-		<form action="/board/update.do" method="post">
+		<form action="/board/update.do" method="post" enctype="multipart/form-data">
 			<p class="mb-3 mt-3 input-group" >
 				<small class="input-group-text" th:text="${board.board_no}"></small>
 				<small class="input-group-text">제목</small>
@@ -35,6 +35,39 @@
 					<span th:text="${board.views}"></span>
 				</i>				
 			</p>
+			<div>
+				<p>삭제할 이미지 선택</p>
+				<th:block th:each=" boardImg : ${board.boardImgs}">
+					<label>
+						<input type="checkbox" class="form-check-input"
+						th:value="${boardImg.board_img_no}" name="boardImgNo">
+						<img alt="게시글 이미지" 
+						th:src="@{/public/img/{file}(file=${boardImg.img_path})}" 
+						class="img-thumbnail" width="200">
+					</label>
+				</th:block>
+			</div>
+			<div class="input-group mb-1">
+				<span class="input-group-text">이미지</span>
+				<input type="file" name="imgFile" class="form-control">	
+			</div>
+			<div class="input-group mb-1">
+				<span class="input-group-text">이미지</span>
+				<input type="file" name="imgFile" class="form-control">	
+			</div>
+			<div class="input-group mb-1">
+				<span class="input-group-text">이미지</span>
+				<input type="file" name="imgFile" class="form-control">	
+			</div>
+			<div class="input-group mb-1">
+				<span class="input-group-text">이미지</span>
+				<input type="file" name="imgFile" class="form-control">	
+			</div>
+			<div class="input-group mb-3">
+				<span class="input-group-text">이미지</span>
+				<input type="file" name="imgFile" class="form-control">	
+			</div>
+			
 			<div class="input-group mb-3">
 				<span  class="input-group-text">내용</span>
 				<textarea  name="contents" class="form-control" placeholder="Leave a comment here" 

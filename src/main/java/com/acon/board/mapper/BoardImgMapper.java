@@ -12,5 +12,7 @@ public interface BoardImgMapper {
 	int insertOne (BoardImg boardImg);
 	List<BoardImg> selectBoardNo(int boardNo);
 	List<BoardImg> selectUserId(String userId);
-	
+	BoardImg selectOne(int boardImgNo);
+	int deleteOne(int boardImgNo);
+	int selectCountBoardNo(int boardNo);
 }

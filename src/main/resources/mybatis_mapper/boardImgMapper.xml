@@ -10,13 +10,26 @@
 		SELECT * FROM BOARD_IMG
 			WHERE board_no=#{boardNo}
 	</select>
-	<select id="selectUserId"
-	resultType="BoardImg" 
-	parameterType="String">
+	<select id="selectUserId" resultType="BoardImg" parameterType="String">
 		SELECT * FROM BOARD_IMG
 			WHERE board_no 
 				in (SELECT board_no FROM BOARD 
 					WHERE user_id=#{userId})
 	</select>
+	<select id="selectOne" 
+		resultType="BoardImg" 
+		parameterType="int">
+		SELECT * FROM BOARD_IMG
+			WHERE board_img_no=#{boardImgNo}
+	</select>
+	<delete id="deleteOne" parameterType="int">
+		DELETE FROM BOARD_IMG 
+			WHERE board_img_no=#{boardImgNo}
+	</delete>
+	<select id="selectCountBoardNo" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM BOARD_IMG
+			WHERE board_no=#{boardNo}
+	</select>
+	
 	
 </mapper>
