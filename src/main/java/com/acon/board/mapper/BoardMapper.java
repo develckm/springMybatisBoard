@@ -3,6 +3,7 @@ package com.acon.board.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.acon.board.dto.Board;
 
@@ -15,7 +16,7 @@ public interface BoardMapper {
 	Board selectOne(int boardNo);
 	int updateGood(int boardNo);
 	int updateBad(int boardNo);
-	int updateViews(int boardNo);
+	int updateViews( int boardNo);
 	int insertOne(Board board);
 	int updateOne(Board board);
 	int deleteOne(int boardNo);

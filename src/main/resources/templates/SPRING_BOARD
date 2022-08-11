@@ -88,6 +88,7 @@ CREATE TABLE BOARD(
 	FOREIGN KEY(user_id) REFERENCES USER(user_id)
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
+
 CREATE TABLE BOARD_IMG(
 	board_img_no INT AUTO_INCREMENT,
 	board_no INT NOT NULL,
@@ -136,3 +137,72 @@ INSERT INTO REPLY (title,contents,user_id,board_no) VALUES
 ('a_reply_writer 가 쓴 4번 글입니다.','글내용입니다.','a_reply_writer',1),
 ('a_reply_writer 가 쓴 5번 글입니다.','글내용입니다.','a_reply_writer',1),
 ('a_reply_writer 가 쓴 6번 글입니다.','글내용입니다.','a_reply_writer',1);
+
+CREATE TABLE BOARD_PREFER(
+	board_prefer_no INT AUTO_INCREMENT,
+	board_no INT NOT NULL,
+	prefer BOOLEAN,
+	user_id VARCHAR(255) NOT NULL,
+	PRIMARY KEY (board_prefer_no),
+	FOREIGN KEY (user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (board_no) REFERENCES BOARD(board_no)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE KEY (board_no,user_id)
+);
+CREATE TABLE REPLY_PREFER(
+	reply_prefer_no INT AUTO_INCREMENT,
+	reply_no INT NOT NULL,
+	prefer BOOLEAN,
+	user_id VARCHAR(255) NOT NULL,
+	PRIMARY KEY (reply_prefer_no),
+	FOREIGN KEY (user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (reply_no) REFERENCES REPLY(reply_no)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE KEY (reply_no,user_id)
+);
+INSERT INTO REPLY_PREFER (reply_no, user_id, prefer)
+VALUES ( 6, 'user1',true),
+ ( 6, 'user2',true ),
+ ( 6, 'user3',true ),
+ ( 6, 'user4',true ),
+ ( 6, 'user5',true ),
+ ( 5, 'user5',true ),
+ ( 5, 'user6',true ),
+ ( 6, 'user7',false),
+ ( 6, 'user8',false),
+ ( 4, 'user1',false),
+ ( 4, 'user2',false),
+ ( 4, 'user3',false),
+ ( 4, 'user4',false),
+ ( 4, 'user5',false),
+ ( 4, 'user6',false);
+
+
+
+
+INSERT INTO BOARD_PREFER (board_no, user_id, prefer)
+VALUES ( 1, 'user1',true),
+ ( 1, 'user2',true ),
+ ( 1, 'user3',true ),
+ ( 1, 'user4',true ),
+ ( 1, 'user5',true ),
+ ( 2, 'user5',true ),
+ ( 2, 'user6',true );
+
+INSERT INTO BOARD_PREFER (board_no, user_id, prefer)
+VALUES ( 1, 'user7',false),
+ ( 1, 'user8',false),
+ ( 3, 'user1',false),
+ ( 3, 'user2',false),
+ ( 3, 'user3',false),
+ ( 3, 'user4',false),
+ ( 3, 'user5',false),
+ ( 3, 'user6',false);
+SELECT 
+	board_no no, 
+	title, 
+	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=true AND board_no=no ) goods,
+	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=false AND board_no=no ) bads
+	FROM BOARD;

@@ -28,10 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.acon.board.dto.Board;
 import com.acon.board.dto.BoardImg;
+import com.acon.board.dto.BoardPrefer;
 import com.acon.board.dto.Reply;
 import com.acon.board.dto.User;
 import com.acon.board.mapper.BoardImgMapper;
 import com.acon.board.mapper.BoardMapper;
+import com.acon.board.mapper.BoardPreferMapper;
 import com.acon.board.service.BoardService;
 
 @Controller
@@ -52,6 +54,9 @@ public class BoardController {
 	private BoardImgMapper boardImgMapper;
 	
 	@Autowired
+	private BoardPreferMapper boardPreferMapper;
+	
+	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
 	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
@@ -61,35 +66,28 @@ public class BoardController {
 		return "/board/list";
 	}
 	@GetMapping("/detail/{boardNo}")
-	public String detail(@PathVariable int boardNo,Model model) {
+	public String detail(
+			@PathVariable int boardNo,
+			Model model,
+			@SessionAttribute(required = false) User loginUser) {
 		Board board=null;
+		BoardPrefer boardPrefer=null; //로그인 안되면 null
 		try {
+			if(loginUser!=null) {
+				boardPrefer=boardPreferMapper.selectUserIdBoardNo(loginUser.getUser_id(), boardNo);
+				//좋아요 싫어요를 1번도 안했으면 null
+			}
 			board = boardService.readBoardUpdateViews(boardNo);
 		} catch (Exception e) {e.printStackTrace();}
 		
 		System.out.println(board);
 		if(board!=null) {
-			model.addAttribute(board);
+			model.addAttribute("boardPrefer",boardPrefer);
+			model.addAttribute("board",board);
 			return "/board/detail";			
 		}else {
 			return "redirect:/board/list/1";
 		}
-	}
-	@GetMapping("/update/good/{boardNo}")
-	public String updateGood(@PathVariable int boardNo) {
-		int update=0;
-		try {
-			update=boardMapper.updateGood(boardNo);			
-		}catch (Exception e) {e.printStackTrace();}
-		return "redirect:/board/detail/"+boardNo;
-	}
-	@GetMapping("/update/bad/{boardNo}")
-	public String updateBad(@PathVariable int boardNo) {
-		int update=0;
-		try {
-			update=boardMapper.updateBad(boardNo);
-		}catch (Exception e) {e.printStackTrace();}
-		return "redirect:/board/detail/"+boardNo;
 	}
 	@GetMapping("/insert.do")
 	public String insert(HttpSession session) {
@@ -225,6 +223,101 @@ public class BoardController {
 		}
 		
 	}
+	@GetMapping("/prefer/delete/{boardNo}/{boardPreferNo}")
+	public String preferDelete(
+			@PathVariable int boardNo,
+			@PathVariable int boardPreferNo,
+			@SessionAttribute (required = false) User loginUser,
+			HttpSession session) {
+		String msg="";
+		if(loginUser!=null) {
+			int delete=0;
+			try {
+				delete=boardPreferMapper.deleteOne(boardPreferNo);
+				if(delete>0) {
+					msg="평가가 삭제되었습니다.";
+				}else {
+					msg="평가가 삭제 실패!";
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				msg="평가가 삭제 실패!(오류)";
+			}
+			session.setAttribute("msg", msg);
+			return "redirect:/board/detail/"+boardNo;	
+		}else {
+			msg="좋아요,싫어요는 로그인 하셔야 이용하실 수 있습니다.";
+			session.setAttribute("msg", msg);
+			session.setAttribute("redirectPage", "/board/detail/"+boardNo);
+			return "redirect:/user/login.do";
+		}
+	}
+	
+	@GetMapping("/prefer/update/{boardNo}/{boardPreferNo}/{prefer}")
+	public String preferUpdate(
+			@PathVariable int boardNo,
+			@PathVariable int boardPreferNo,
+			@PathVariable boolean prefer,
+			@SessionAttribute(required = false) User loginUser,
+			HttpSession session) {
+		String msg="";
+		if(loginUser!=null) {
+			int update=0;
+			try {
+				update=boardPreferMapper.updateOne(prefer, boardPreferNo);
+				if(update>0) {
+					msg=(prefer)?"좋아요 수정 성공!":"싫어요 수정 성공!";					
+				}else {
+					msg=(prefer)?"좋아요 수정 실패!":"싫어요 수정 실패!";
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				msg=(prefer)?"좋아요 수정 실패!(오류)":"싫어요 수정 실패!(오류)";
+			}
+			session.setAttribute("msg", msg);
+			return "redirect:/board/detail/"+boardNo;
+		}else {
+			msg="좋아요,싫어요는 로그인 하셔야 이용하실 수 있습니다.";
+			session.setAttribute("msg", msg);
+			session.setAttribute("redirectPage", "/board/detail/"+boardNo);
+			return "redirect:/user/login.do";
+		}	
+	}
+	
+	@GetMapping("/prefer/insert/{boardNo}/{prefer}")
+	public String preferInsert(
+			@PathVariable int boardNo,
+			@PathVariable boolean prefer,
+			@SessionAttribute(required = false) User loginUser,
+			HttpSession session) {
+		String msg="";
+		if(loginUser!=null) {
+			BoardPrefer boardPrefer=new BoardPrefer();
+			boardPrefer.setBoard_no(boardNo);
+			boardPrefer.setPrefer(prefer);
+			boardPrefer.setUser_id(loginUser.getUser_id());
+			int insert=0;
+			try {
+				insert=boardPreferMapper.insertOne(boardPrefer);
+				if(insert>0) {
+					msg=(prefer)? "좋아요 성공!":"싫어요 성공";
+				}else {
+					msg=(prefer)? "좋아요 다시 시도!":"싫어요 다시 시도!";	
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				msg=(prefer)? "좋아요 다시 시도(오류)!":"싫어요 다시 시도(오류)!";	
+			}
+			session.setAttribute("msg", msg);
+			return "redirect:/board/detail/"+boardNo;
+		}else {
+			msg="좋아요,싫어요는 로그인 하셔야 이용하실 수 있습니다.";
+			session.setAttribute("msg", msg);
+			session.setAttribute("redirectPage", "/board/detail/"+boardNo);
+			return "redirect:/user/login.do";
+		}
+	}
+	
 }
 
 

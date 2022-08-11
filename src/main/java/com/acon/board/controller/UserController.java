@@ -113,7 +113,13 @@ public class UserController {
 		System.out.println(user);
 		if(user!=null) {
 			session.setAttribute("loginUser", user);
-			return "redirect:/";
+			Object redirectPage=session.getAttribute("redirectPage");
+			session.removeAttribute("redirectPage");
+			if(redirectPage!=null) {
+				return "redirect:"+redirectPage;
+			}else {
+				return "redirect:/";				
+			}
 		}else {
 			return "redirect:/user/login.do";
 		}

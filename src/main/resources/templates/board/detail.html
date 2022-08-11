@@ -8,9 +8,10 @@
 	<header th:insert="/headerNav"></header>
 	<main class="container">
 		<h1 class="m-3">
-			<small th:text="${board.board_no}"></small>
+			<small th:text="${board.board_no}"></small>.
 			<span th:text="${board.title}"></span>
 		</h1>
+		<p th:text="${boardPrefer}"></p>
 		<p>
 			글쓴이 아이디 :<strong th:text="${board.user.user_id}"></strong> ,
 			이름 :<strong th:text="${board.user.name}"></strong>
@@ -24,23 +25,70 @@
 		</p>
 		<div class="mb-3 d-flex justify-content-between">
 			<div>
-				<a 
-			 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요!"
-				th:href="@{/board/update/good/{no}(no=${board.board_no})}" class="btn btn-primary">
-					<i class="bi bi-hand-thumbs-up"></i>				
-					<span th:text="${board.good}"></span>
-				</a> /
-				<a 
-			 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="싫어요!"
-				th:href="@{/board/update/bad/{no}(no=${board.board_no})}"  class="btn btn-danger">
-					<i class="bi bi-hand-thumbs-down"></i>				
-					 <span th:text="${board.bad}"></span>
-				</a> /
-					<i class="bi bi-eye" 
-					data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="조회수"
-					>
-						<span th:text="${board.views}"></span>
-					</i>				
+				<th:block th:if="${boardPrefer==null}">
+					<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요!"
+					th:href="@{/board/prefer/insert/{no}/{prefer}
+					(no=${board.board_no},prefer=${true})}" 
+					class="btn btn-outline-primary">
+						<i class="bi bi-hand-thumbs-up"></i>				
+						<span th:text="${board.good}"></span>
+					</a> /
+					<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="싫어요!"
+					th:href="@{/board/prefer/insert/{no}/{prefer}
+					(no=${board.board_no},prefer=${false})}"  
+					class="btn btn-outline-danger">
+						<i class="bi bi-hand-thumbs-down"></i>				
+						 <span th:text="${board.bad}"></span>
+					</a> 
+				</th:block>
+				<!--  boardPrefer!=null : 로그인 한 사람이 좋아요 싫어요를 한번이라도 한 글-->
+				<!--  boardPrefer?.prefer==true : 좋아요를 누른 사람 (좋아요: 삭제, 싫어요 : 수정)-->
+				<th:block th:if="${boardPrefer?.prefer==true}">
+				 	<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요!"
+					th:href="@{/board/prefer/delete/{no}/{preferNo}
+					(no=${board.board_no},preferNo=${boardPrefer.board_prefer_no})}"  
+					class="btn btn-outline-primary">
+						<i class="bi bi-hand-thumbs-up-fill"></i>				
+						<span th:text="${board.good}"></span>
+					</a> /
+					<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="싫어요!"
+					th:href="@{/board/prefer/update/{no}/{preferNo}/{prefer}
+					(no=${board.board_no},preferNo=${boardPrefer.board_prefer_no},prefer=${false})}"  
+					class="btn btn-outline-danger">
+						<i class="bi bi-hand-thumbs-down"></i>				
+						 <span th:text="${board.bad}"></span>
+					</a> 			
+				</th:block>
+				<!--  boardPrefer?.prefer==false : 싫어요를 누른 사람 (좋아요: 수정, 싫어요 : 삭제)-->
+				<th:block th:if="${boardPrefer?.prefer==false}">
+				 	<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="좋아요!"
+					th:href="@{/board/prefer/update/{no}/{preferNo}/{prefer}
+					(no=${board.board_no},preferNo=${boardPrefer.board_prefer_no},prefer=${true})}"  
+					class="btn btn-outline-primary">
+						<i class="bi bi-hand-thumbs-up"></i>				
+						<span th:text="${board.good}"></span>
+					</a> /
+					<a 
+				 	data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="싫어요!"
+					th:href="@{/board/prefer/delete/{no}/{preferNo}
+					(no=${board.board_no},preferNo=${boardPrefer.board_prefer_no})}"  
+					class="btn btn-outline-danger">
+						<i class="bi bi-hand-thumbs-down-fill"></i>				
+						 <span th:text="${board.bad}"></span>
+					</a> 			
+				</th:block>
+				
+				/
+				<i class="bi bi-eye" 
+				data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="조회수"
+				>
+					<span th:text="${board.views}"></span>
+				</i>				
 			</div>
 			<div th:if="${session.loginUser?.user_id==board.user.user_id}">
 				<a th:href="@{/board/update/{no}(no=${board.board_no})}" class="btn btn-success">

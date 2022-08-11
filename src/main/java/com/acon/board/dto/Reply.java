@@ -1,6 +1,7 @@
 package com.acon.board.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -29,9 +30,23 @@ public class Reply {
 	private String contents;
 	@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
 	private Date post_time;
-	private String img_path;
-	private int good;     
-	private int bad;      
+	private String img_path;	
 	private int board_no; 
 	private User user;//fk user_id  
+	private int good;     
+	private int bad;
+	private List<ReplyPrefer> good_prefers;
+	private List<ReplyPrefer> bad_prefers;
+
+	
 }
+
+
+
+
+
+
+
+
+
+

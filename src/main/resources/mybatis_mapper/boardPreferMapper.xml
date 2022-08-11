@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
+<mapper namespace="com.acon.board.mapper.BoardPreferMapper">
+	<select id="selectUserIdBoardNo" resultType="BoardPrefer">
+		SELECT * FROM BOARD_PREFER
+			WHERE user_id=#{userId} AND board_no=#{boardNo}
+	</select>
+	<insert id="insertOne" parameterType="BoardPrefer">
+		INSERT INTO BOARD_PREFER 
+			(board_no, user_id, prefer)
+			VALUES 
+			(#{board_no}, #{user_id}, #{prefer})
+	</insert>
+	<delete id="deleteOne" parameterType="int">
+		DELETE FROM BOARD_PREFER 
+			WHERE board_prefer_no=#{boardPreferNo}
+	</delete>
+	<update id="updateOne">
+		UPDATE BOARD_PREFER 
+			SET prefer=#{prefer} 
+			WHERE board_prefer_no=#{boardPreferNo}
+	</update>
+</mapper>
