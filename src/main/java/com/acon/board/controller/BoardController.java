@@ -17,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,10 +32,13 @@ import com.acon.board.dto.Board;
 import com.acon.board.dto.BoardImg;
 import com.acon.board.dto.BoardPrefer;
 import com.acon.board.dto.Reply;
+import com.acon.board.dto.ReplyPrefer;
 import com.acon.board.dto.User;
 import com.acon.board.mapper.BoardImgMapper;
 import com.acon.board.mapper.BoardMapper;
 import com.acon.board.mapper.BoardPreferMapper;
+import com.acon.board.mapper.ReplyMapper;
+import com.acon.board.mapper.ReplyPreferMapper;
 import com.acon.board.service.BoardService;
 
 @Controller
@@ -57,6 +62,12 @@ public class BoardController {
 	private BoardPreferMapper boardPreferMapper;
 	
 	@Autowired
+	private ReplyMapper replyMapper;
+	
+	@Autowired
+	private ReplyPreferMapper replyPreferMapper;
+	
+	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
 	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
@@ -73,11 +84,25 @@ public class BoardController {
 		Board board=null;
 		BoardPrefer boardPrefer=null; //로그인 안되면 null
 		try {
+			board = boardService.readBoardUpdateViews(boardNo);
 			if(loginUser!=null) {
 				boardPrefer=boardPreferMapper.selectUserIdBoardNo(loginUser.getUser_id(), boardNo);
 				//좋아요 싫어요를 1번도 안했으면 null
+				if(board.getReplys()!=null) {
+					for(Reply reply :board.getReplys()) {
+						for( ReplyPrefer prefer :reply.getGood_prefers()) {
+							if(prefer.getUser_id().equals(loginUser.getUser_id())) {
+								reply.setPrefer_active(true);
+							}
+						}
+						for( ReplyPrefer prefer :reply.getBad_prefers()) {
+							if(prefer.getUser_id().equals(loginUser.getUser_id())) {
+								reply.setPrefer_active(false);
+							}
+						}
+					}
+				}
 			}
-			board = boardService.readBoardUpdateViews(boardNo);
 		} catch (Exception e) {e.printStackTrace();}
 		
 		System.out.println(board);
@@ -316,6 +341,81 @@ public class BoardController {
 			session.setAttribute("redirectPage", "/board/detail/"+boardNo);
 			return "redirect:/user/login.do";
 		}
+	}
+	@PutMapping("/reply/prefer/update/{replyNo}/{prefer}")
+	public String replyPerferUpdate(
+				@PathVariable int replyNo,
+				@PathVariable boolean prefer,
+				@SessionAttribute(required = false) User loginUser,
+				Model model) {
+		System.out.println("put 호출");
+		int update=0;
+		Reply reply=null;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setPrefer(prefer);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			update=replyPreferMapper.updateOne(replyPrefer);
+			
+			reply=replyMapper.selectOnePrefers(replyNo);
+			model.addAttribute("reply", reply);
+			if(update>0) {
+				reply.setPrefer_active(prefer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/board/replyDetail";
+	}
+	@PostMapping("/reply/prefer/insert/{replyNo}/{prefer}")
+	public String replyPerferInsert(
+				@PathVariable int replyNo,
+				@PathVariable boolean prefer,
+				@SessionAttribute(required = true) User loginUser,
+				Model model) {
+		System.out.println("post 호출");
+		Reply reply=null;
+		int insert=0;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			replyPrefer.setPrefer(prefer);
+			insert=replyPreferMapper.insertOne(replyPrefer);				
+			
+			reply=replyMapper.selectOnePrefers(replyNo);
+			if(insert>0) {
+				reply.setPrefer_active(prefer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("reply",reply);
+		return "/board/replyDetail";
+	}
+	@DeleteMapping("/reply/prefer/delete/{replyNo}")
+	public String replyPerferDelete(
+				@PathVariable int replyNo,
+				@SessionAttribute(required = true) User loginUser,
+				Model model) {
+		System.out.println("delete 호출");
+		int delete=0;
+		Reply reply=null;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			
+			delete=replyPreferMapper.deleteOne(replyPrefer);
+			
+			reply=replyMapper.selectOnePrefers(replyNo);
+			model.addAttribute("reply",reply);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "/board/replyDetail";
 	}
 	
 }

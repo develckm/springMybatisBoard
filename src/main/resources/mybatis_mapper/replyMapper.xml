@@ -2,6 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">        
 <mapper namespace="com.acon.board.mapper.ReplyMapper">
+	<resultMap type="Reply" id="ReplyMap">
+		<id column="reply_no" property="reply_no"/>
+		<result column="title" property="title"/>
+		<result column="contents" property="contents"/>
+		<result column="post_time" property="post_time"/>
+		<result column="img_path" property="img_path"/>
+		<result column="board_no" property="board_no"/>
+		<association property="user" javaType="User">
+			<id column="user_id" property="user_id"/>
+		</association>	
+		<collection property="good_prefers" ofType="ReplyPrefer" javaType="java.util.ArrayList">
+			<id column="good_reply_prefer_no" property="reply_prefer_no"/>
+			<result column="good_reply_no" property="reply_no"/>
+			<result column="good_prefer" property="prefer"/>
+			<result column="good_user_id" property="user_id"/>
+		</collection>
+		<collection property="bad_prefers" ofType="ReplyPrefer" javaType="java.util.ArrayList">
+			<id column="bad_reply_prefer_no" property="reply_prefer_no"/>
+			<result column="bad_reply_no" property="reply_no"/>
+			<result column="bad_prefer" property="prefer"/>
+			<result column="bad_user_id" property="user_id"/>
+		</collection>
+	</resultMap>
+	<select id="selectOnePrefers" resultMap="ReplyMap" parameterType="int">
+		SELECT r.*,
+			g.reply_prefer_no 	as good_reply_prefer_no,
+			g.reply_no			as good_reply_no,
+			g.prefer			as good_prefer,
+			g.user_id			as good_user_id,
+			
+			b.reply_prefer_no 	as bad_reply_prefer_no,
+			b.reply_no			as bad_reply_no,
+			b.prefer			as bad_prefer,
+			b.user_id			as bad_user_id
+			
+			FROM REPLY r LEFT JOIN (SELECT * FROM REPLY_PREFER WHERE prefer=true) g
+			ON r.reply_no = g.reply_no
+			
+			LEFT JOIN (SELECT * FROM REPLY_PREFER WHERE prefer=false) b
+			ON r.reply_no = b.reply_no
+			WHERE r.reply_no=#{replyNo}
+	</select>
+
 	<select id="selectOne" resultType="Reply" parameterType="int">
 		SELECT *,user_id 'user.user_id' FROM REPLY 
 		WHERE reply_no=#{replyNo}
@@ -30,16 +73,6 @@
 			contents=#{contents},
 			img_path=#{img_path}
 			WHERE reply_no=#{reply_no}
-	</update>
-	<update id="updateGood" parameterType="int">
-		UPDATE REPLY SET
-			good=good+1
-			WHERE reply_no=#{replyNo}
-	</update>
-	<update id="updateBad" parameterType="int">
-		UPDATE REPLY SET
-			bad=bad+1
-			WHERE reply_no=#{replyNo}
 	</update>
 	<delete id="deleteOne" parameterType="int">
 		DELETE FROM REPLY WHERE reply_no=#{replyNo}

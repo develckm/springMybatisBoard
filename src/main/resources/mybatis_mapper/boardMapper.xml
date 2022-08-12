@@ -37,6 +37,16 @@
 				<result column="rp_good_reply_no" property="reply_no"/>
 				<result column="rp_good_prefer" property="prefer" />
 			</collection>
+			
+			<collection property="bad_prefers" ofType="ReplyPrefer" javaType="java.util.ArrayList">
+				<id column="rp_bad_reply_prefer_no"  property="reply_prefer_no"/>
+				<result column="rp_bad_user_id" property="user_id"/>
+				<result column="rp_bad_reply_no" property="reply_no"/>
+				<result column="rp_bad_prefer" property="prefer" />
+			</collection>
+			
+			
+			
 		</collection>
 		<collection property="boardImgs" javaType="java.util.ArrayList" ofType="BoardImg">
 			<id column="iboard_img_no" property="board_img_no"/>
@@ -83,7 +93,12 @@
 			rp_good.user_id 			as rp_good_user_id,
 			rp_good.reply_prefer_no 	as rp_good_reply_prefer_no,
 			rp_good.reply_no 			as rp_good_reply_no,
-			rp_good.prefer 				as rp_good_prefer
+			rp_good.prefer 				as rp_good_prefer,
+			
+			rp_bad.user_id 				as rp_bad_user_id,
+			rp_bad.reply_prefer_no 		as rp_bad_reply_prefer_no,
+			rp_bad.reply_no 			as rp_bad_reply_no,
+			rp_bad.prefer 				as rp_bad_prefer
 			
 			
 			FROM BOARD b INNER JOIN USER u
@@ -103,7 +118,6 @@
 			
 			
 			WHERE b.board_no=#{boardNo}
-			OR rp_good.prefer=true
 			ORDER BY reply_no DESC
 	</select>
 	<!-- <update id="updateGood">

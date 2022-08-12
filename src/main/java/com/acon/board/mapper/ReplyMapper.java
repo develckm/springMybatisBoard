@@ -10,6 +10,9 @@ import com.acon.board.dto.Reply;
 @Mapper
 public interface ReplyMapper {
 	Reply selectOne(int replyNo);
+	Reply selectOnePrefers(int replyNo);
+	
+	
 	List<Reply> selectBoardNo(int boardNo);
 	List<Reply> selectUserId(String userId);
 	

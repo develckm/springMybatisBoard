@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세</title>
+<script th:src="@{/public/js/board/detail.js}" defer="defer" ></script>
 </head>
 <body>
 	<header th:insert="/headerNav"></header>
@@ -151,14 +152,11 @@
 				<th:block th:each="reply : ${board.replys}">
 				  	<th:block th:if="${session.loginUser?.user_id!=reply.user.user_id}">
 <!--///////////////////////////////////// 로그인 안된 리플 ///////////////////////////////////////////////////////////////// -->				
-				  		<li class="list-group-item d-flex justify-content-between align-items-start">
+				  		<li th:id="${'replyLi'+reply.reply_no}"
+				  			class="list-group-item d-flex justify-content-between align-items-start">
 						    <div class="ms-2 me-auto">
-						      <div>
-						      	글쓴이 : <span th:text="${reply.user.user_id}"></span>			      	
-						      </div>
-						      <div>
-						      	등록일 : <span th:text="${#dates.format(reply.post_time,'yyyy-MM-dd HH:mm:ss')}"></span>
-						      </div>
+						      <div>글쓴이 : <span th:text="${reply.user.user_id}"></span>			      	</div>
+						      <div>등록일 : <span th:text="${#dates.format(reply.post_time,'yyyy-MM-dd HH:mm:ss')}"></span></div>
 						      <div class="fw-bold">
 						      	<span th:text="${reply.reply_no}"></span>.
 						      	<span th:text="${reply.title}"></span>
@@ -169,12 +167,32 @@
 						      </div>
 						      <div th:text="${reply.contents}"></div>	
 						    </div>
-						    <a class="badge bg-primary rounded-pill bi bi-hand-thumbs-up" 
-						    	th:text="${reply.good}" th:href="@{/reply/update/good/{no}(no=${reply.reply_no})}">
+							<!-- reply.prefer_active : 
+									(null-아무도 좋아요를 안누름/insert)  
+									(true-좋아요를 누름/좋아요:delete,싫어요:update)  
+									(false-싫어요를 누름/좋아요:update,싫어요:delete)
+									reply_prefer을 reply_no+user_id 로 수정 삭제
+							-->
+						    <a  
+						    	th:classappend="${
+						    		(reply.prefer_active!=null&&reply.prefer_active)
+			    						?'bi-hand-thumbs-up-fill' 
+			    						: 'bi-hand-thumbs-up'
+						    					}"
+						    	class="btn btn-sm btn-outline-primary rounded-pill bi " 
+						    	th:text="${reply.good_prefers?.size}"
+						    	th:href="|javascript:replyPreferHandler(${reply.reply_no},${reply.prefer_active},'good')|">
 						    </a>
 						    &nbsp;
-						    <a class="badge bg-danger rounded-pill bi bi-hand-thumbs-down" 
-						    	th:text="${reply.bad}" th:href="@{/reply/update/good/{no}(no=${reply.reply_no})}">
+						    <a  
+						    	th:classappend="${
+						    		(reply.prefer_active!=null&&!reply.prefer_active)
+			    						?'bi-hand-thumbs-down-fill' 
+			    						: 'bi-hand-thumbs-down'
+						    					}"
+						    	class="btn btn-sm btn-outline-danger rounded-pill bi " 
+						    	th:text="${reply.bad_prefers?.size}" 
+						    	th:href="|javascript:replyPreferHandler( ${reply.reply_no},${reply.prefer_active},'bad')|">
 						    </a>
 				  		</li>
 				  	</th:block>

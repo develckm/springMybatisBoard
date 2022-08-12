@@ -32,9 +32,11 @@ public class Reply {
 	private Date post_time;
 	private String img_path;	
 	private int board_no; 
-	private User user;//fk user_id  
-	private int good;     
+	private int good;
 	private int bad;
+	
+	private User user;//fk user_id  
+	private Boolean prefer_active=null; //null : 누른적이 없는 , true: good을 누른 것, false: bad를 누른 것
 	private List<ReplyPrefer> good_prefers;
 	private List<ReplyPrefer> bad_prefers;
 
