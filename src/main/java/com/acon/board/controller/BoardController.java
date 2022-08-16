@@ -62,12 +62,6 @@ public class BoardController {
 	private BoardPreferMapper boardPreferMapper;
 	
 	@Autowired
-	private ReplyMapper replyMapper;
-	
-	@Autowired
-	private ReplyPreferMapper replyPreferMapper;
-	
-	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
 	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
@@ -342,82 +336,6 @@ public class BoardController {
 			return "redirect:/user/login.do";
 		}
 	}
-	@PutMapping("/reply/prefer/update/{replyNo}/{prefer}")
-	public String replyPerferUpdate(
-				@PathVariable int replyNo,
-				@PathVariable boolean prefer,
-				@SessionAttribute(required = false) User loginUser,
-				Model model) {
-		System.out.println("put 호출");
-		int update=0;
-		Reply reply=null;
-		try {
-			ReplyPrefer replyPrefer=new ReplyPrefer();
-			replyPrefer.setReply_no(replyNo);
-			replyPrefer.setPrefer(prefer);
-			replyPrefer.setUser_id(loginUser.getUser_id());
-			update=replyPreferMapper.updateOne(replyPrefer);
-			
-			reply=replyMapper.selectOnePrefers(replyNo);
-			model.addAttribute("reply", reply);
-			if(update>0) {
-				reply.setPrefer_active(prefer);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "/board/replyDetail";
-	}
-	@PostMapping("/reply/prefer/insert/{replyNo}/{prefer}")
-	public String replyPerferInsert(
-				@PathVariable int replyNo,
-				@PathVariable boolean prefer,
-				@SessionAttribute(required = true) User loginUser,
-				Model model) {
-		System.out.println("post 호출");
-		Reply reply=null;
-		int insert=0;
-		try {
-			ReplyPrefer replyPrefer=new ReplyPrefer();
-			replyPrefer.setReply_no(replyNo);
-			replyPrefer.setUser_id(loginUser.getUser_id());
-			replyPrefer.setPrefer(prefer);
-			insert=replyPreferMapper.insertOne(replyPrefer);				
-			
-			reply=replyMapper.selectOnePrefers(replyNo);
-			if(insert>0) {
-				reply.setPrefer_active(prefer);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		model.addAttribute("reply",reply);
-		return "/board/replyDetail";
-	}
-	@DeleteMapping("/reply/prefer/delete/{replyNo}")
-	public String replyPerferDelete(
-				@PathVariable int replyNo,
-				@SessionAttribute(required = true) User loginUser,
-				Model model) {
-		System.out.println("delete 호출");
-		int delete=0;
-		Reply reply=null;
-		try {
-			ReplyPrefer replyPrefer=new ReplyPrefer();
-			replyPrefer.setReply_no(replyNo);
-			replyPrefer.setUser_id(loginUser.getUser_id());
-			
-			delete=replyPreferMapper.deleteOne(replyPrefer);
-			
-			reply=replyMapper.selectOnePrefers(replyNo);
-			model.addAttribute("reply",reply);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "/board/replyDetail";
-	}
-	
 }
 
 

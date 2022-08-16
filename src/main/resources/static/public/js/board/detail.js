@@ -1,18 +1,18 @@
 
 function replyPreferHandler(replyNo,preferActive,btn){
 	console.log(preferActive);
-	let url="/board/reply/prefer";
+	let url="/reply/prefer/";
 	let prefer=((btn=="good")?true:false);
 	let method;
 	let replyLiId="replyLi"+replyNo;
 	if(preferActive==null){
-		url+="/insert/"+replyNo+"/"+prefer;
+		url+=replyNo+"/"+prefer;
 		method="post";
 	}else if( (preferActive && prefer) || (!preferActive && !prefer)){
-		url+="/delete/"+replyNo;		
+		url+=replyNo;		
 		method="delete";
 	}else {
-		url+="/update/"+replyNo+"/"+prefer;
+		url+=replyNo+"/"+prefer;
 		method="put";
 	}
 	fetch(url,{method:method})

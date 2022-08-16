@@ -14,16 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.acon.board.dto.Reply;
+import com.acon.board.dto.ReplyPrefer;
 import com.acon.board.dto.User;
 import com.acon.board.mapper.ReplyMapper;
+import com.acon.board.mapper.ReplyPreferMapper;
 
 @Controller
 @RequestMapping("/reply")
@@ -32,6 +36,8 @@ public class ReplyController {
 	ReplyMapper replyMapper;
 	@Value("${spring.servlet.multipart.location}")
 	String savePath;
+	@Autowired
+	private ReplyPreferMapper replyPreferMapper;
 	
 	@PostMapping("/insert.do")
 	public String insert
@@ -128,6 +134,80 @@ public class ReplyController {
 			return "redirect:/user/login.do";			
 		}
 		
+	}
+	
+	@PutMapping("/prefer/{replyNo}/{prefer}")
+	public String replyPerferUpdate(
+				@PathVariable int replyNo,
+				@PathVariable boolean prefer,
+				@SessionAttribute(required = false) User loginUser,
+				Model model) {
+		System.out.println("put 호출");
+		int update=0;
+		Reply reply=null;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setPrefer(prefer);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			update=replyPreferMapper.updateOne(replyPrefer);
+			
+			reply=replyMapper.selectOnePrefers(replyNo);
+			model.addAttribute("reply", reply);
+			if(update>0) {
+				reply.setPrefer_active(prefer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/board/replyDetail";
+	}
+	@PostMapping("/prefer/{replyNo}/{prefer}")
+	public String replyPerferInsert(
+				@PathVariable int replyNo,
+				@PathVariable boolean prefer,
+				@SessionAttribute(required = true) User loginUser,
+				Model model) {
+		System.out.println("post 호출");
+		Reply reply=null;
+		int insert=0;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			replyPrefer.setPrefer(prefer);
+			insert=replyPreferMapper.insertOne(replyPrefer);						
+			reply=replyMapper.selectOnePrefers(replyNo);
+			if(insert>0) {
+				reply.setPrefer_active(prefer);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("reply",reply);
+		return "/board/replyDetail";
+	}
+	@DeleteMapping("/prefer/{replyNo}")
+	public String replyPerferDelete(
+				@PathVariable int replyNo,
+				@SessionAttribute(required = true) User loginUser,
+				Model model) {
+		System.out.println("delete 호출");
+		int delete=0;
+		Reply reply=null;
+		try {
+			ReplyPrefer replyPrefer=new ReplyPrefer();
+			replyPrefer.setReply_no(replyNo);
+			replyPrefer.setUser_id(loginUser.getUser_id());
+			
+			delete=replyPreferMapper.deleteOne(replyPrefer);
+			
+			reply=replyMapper.selectOnePrefers(replyNo);
+			model.addAttribute("reply",reply);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/board/replyDetail";
 	}
 }
 
