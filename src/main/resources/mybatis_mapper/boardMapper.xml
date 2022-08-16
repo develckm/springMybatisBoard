@@ -22,6 +22,8 @@
 		<!-- Board : Reply =  1 : N   ArrayLust<Reply> replys -->
 		<collection property="replys" javaType="java.util.ArrayList" ofType="Reply" >
 			<id column="reply_no" property="reply_no"/>
+			<result column="reply_board_no" property="board_no"/>
+			
 			<result column="reply_title" property="title"/>
 			<result column="reply_contents" property="contents"/>
 			<result column="reply_post_time" property="post_time"/>
@@ -79,16 +81,17 @@
 			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=false) prefer_bad,			
 			u.user_id,u.name,u.email,u.birth,
 			r.reply_no,
-			r.title as reply_title,
-			r.contents as reply_contents,
-			r.post_time as reply_post_time,
-			r.img_path as reply_img_path,
-			r.good as reply_good,
-			r.bad as reply_bad,
-			r.user_id as reply_user_id,
+			r.board_no 		as reply_board_no,		
+			r.title 		as reply_title,
+			r.contents 		as reply_contents,
+			r.post_time 	as reply_post_time,
+			r.img_path 		as reply_img_path,
+			r.good 			as reply_good,
+			r.bad 			as reply_bad,
+			r.user_id 		as reply_user_id,
 			
-			i.board_img_no as iboard_img_no,
-			i.img_path as iimg_path,				
+			i.board_img_no 	as iboard_img_no,
+			i.img_path 		as iimg_path,				
 			
 			rp_good.user_id 			as rp_good_user_id,
 			rp_good.reply_prefer_no 	as rp_good_reply_prefer_no,

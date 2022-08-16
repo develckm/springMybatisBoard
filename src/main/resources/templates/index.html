@@ -14,12 +14,14 @@
 	<hr>
 	<h2> 220816_reply_prefer_ajax </h2>
 	<ul>
-		<li>BoardController에 있는 reply 좋아요 싫어요를 ReplyController로 변경</li>
-		<li>post,put,delete가 insert,update,delete를 의미하기 때문에 url에서 삭제함</li>
+		<li>BoardController에 있는 reply 좋아요 싫어요를 ReplyController로 변경 (post,put,delete가 insert,update,delete를 의미하기 때문에 url에서 삭제함)</li>
 		<li>method:post /board/reply/prefer/insert/{replyNo}/{prefer} -> /reply/prefer/{replyNo}/{prefer}</li>
 		<li>method:put /board/reply/prefer/update/{replyNo}/{prefer} -> /reply/prefer/{replyNo}/{prefer}</li>
 		<li>method:delete /board/reply/prefer/delete/{replyNo} -> /reply/prefer/{replyNo}/{prefer}</li>	
 		<li>/public/js/board/detail.js : replyPreferHandler() 를 async 함수로 변경하고 좋아요 싫어요 실패시 undefind 가 추가되는 현상 해결 </li>
+		<li>/board/replyDetail.html : 자신이 쓴 댓글(수정폼)을 추가하고 자신이 쓴 글에서도 좋아요 싫어요 가능하게 함</li>
+		<li>/board/detail.html : 댓글 출려시 /board/replyDetail.html을 반복 출력하는 것으로 변경</li>
+		<li>/public/js/board/detail.js : 댓글 좋아요 성공시 alert에서 부트스트랩 모달로 변경</li>
 	</ul>
 </body>
 </html>

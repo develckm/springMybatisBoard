@@ -2,6 +2,7 @@ package com.acon.board.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,9 @@ public class UserController {
 		}
 	};
 	@GetMapping("/login.do")
-	public void login() {}
+	public void login(HttpServletRequest req) {
+		System.out.println(req.getHeader("Referer"));
+	}
 	@PostMapping("/login.do")
 	public String login(
 			@RequestParam(value = "user_id")String userId,
