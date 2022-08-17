@@ -150,10 +150,10 @@
 				</li>
 			
 				<th:block th:each="reply : ${board.replys}">
-<!--///////////////////////////////////// 로그인 안된 리플 ///////////////////////////////////////////////////////////////// -->				
 			  		<li th:id="${'replyLi'+reply.reply_no}"
 			  			class="list-group-item"
 			  			th:insert="/board/replyDetail">		
+
 					</li>
 				</th:block>
 			</ul>

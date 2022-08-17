@@ -23,5 +23,13 @@
 		<li>/board/detail.html : 댓글 출려시 /board/replyDetail.html을 반복 출력하는 것으로 변경</li>
 		<li>/public/js/board/detail.js : 댓글 좋아요 성공시 alert에서 부트스트랩 모달로 변경</li>
 	</ul>
+	<h2> 220817_reply_prefer_paging</h2>
+	<ul>
+		<li>Board가 Reply과 1:n reply과 reply_prefer이 1:n 조인을 하고 있어서 paging이 불가능 </li>
+		<li>Board detail 호출시 Reply List를 따로 호출하는 것으로 변경</li>
+		<li>Reply과 reply_prefer을 조인하지 않고 서브쿼리로 수만 확인</li>
+		<li></li>
+		
+	</ul>
 </body>
 </html>

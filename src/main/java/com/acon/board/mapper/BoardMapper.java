@@ -13,6 +13,7 @@ public interface BoardMapper {
 	//질의어 SELECT 의 결과는 무조건 복수지만 Mybatis가 단수로도 반환해준다.
 	List<Board>	selectPageAll();
 	
+	
 	Board selectOne(int boardNo);
 	int updateGood(int boardNo);
 	int updateBad(int boardNo);

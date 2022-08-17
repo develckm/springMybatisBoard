@@ -136,6 +136,9 @@ public class UserController {
 	
 	@GetMapping("/signup.do")
 	public void signup() {}
+	
+	
+	
 	@PostMapping("/signup.do")
 	public void signup(User user) {
 		System.out.println(user);

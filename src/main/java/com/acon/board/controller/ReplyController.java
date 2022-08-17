@@ -140,7 +140,7 @@ public class ReplyController {
 	public String replyPerferUpdate(
 				@PathVariable int replyNo,
 				@PathVariable boolean prefer,
-				@SessionAttribute(required = false) User loginUser,
+				@SessionAttribute(required = true) User loginUser,
 				Model model) {
 		System.out.println("put 호출");
 		int update=0;

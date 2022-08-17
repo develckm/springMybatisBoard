@@ -103,7 +103,6 @@
 			rp_bad.reply_no 			as rp_bad_reply_no,
 			rp_bad.prefer 				as rp_bad_prefer
 			
-			
 			FROM BOARD b INNER JOIN USER u
 			USING (user_id)		
 						
@@ -122,6 +121,8 @@
 			
 			WHERE b.board_no=#{boardNo}
 			ORDER BY reply_no DESC
+			
+			LIMIT 0,5
 	</select>
 	<!-- <update id="updateGood">
 		UPDATE BOARD SET 
