@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  	<th:block th:if="${session.loginUser?.user_id!=reply.user.user_id}">
+  	<th:block th:if="${session.loginUser?.user_id!=reply.user?.user_id}">
 <!--///////////////////////////////////// 로그인 안된 유저의 리플 ///////////////////////////////////////////////////////////////// -->				
 	    <div class="ms-2 me-auto">
 	      <div>글쓴이 : <span th:text="${reply.user.user_id}"></span>			      	</div>
@@ -17,7 +17,7 @@
 		  						: 'bi-hand-thumbs-up'
 			    					}"
 			    	class="btn btn-sm btn-outline-primary rounded-pill bi " 
-			    	th:text="${reply.good_prefers?.size}"
+			    	th:text="${reply.good}"
 			    	th:href="|javascript:replyPreferHandler(${reply.reply_no},${reply.prefer_active},'good')|">
 			    </a>
 			    <span>/</span> 
@@ -28,7 +28,7 @@
 		  						: 'bi-hand-thumbs-down'
 			    					}"
 			    	class="btn btn-sm btn-outline-danger rounded-pill bi " 
-			    	th:text="${reply.bad_prefers?.size}" 
+			    	th:text="${reply.bad}" 
 			    	th:href="|javascript:replyPreferHandler( ${reply.reply_no},${reply.prefer_active},'bad')|">
 			    </a>
 			</div> 
@@ -50,7 +50,7 @@
 				reply_prefer을 reply_no+user_id 로 수정 삭제
 		-->
     </th:block>
-  	<th:block th:unless="${session.loginUser?.user_id!=reply.user.user_id}">
+  	<th:block th:unless="${session.loginUser?.user_id!=reply.user?.user_id}">
 <!--///////////////////////////////////// 로그인된 유저의 리플 ///////////////////////////////////////////////////////////////// -->				
   		<form action="/reply/update.do" method="post" enctype="multipart/form-data" style="width: 100%">
   			<p class="input-group input-group-sm mb-1">
@@ -59,7 +59,7 @@
 					type="text" class="form-control" readonly>
   			
 				<span class="input-group-text">글쓴이</span>
-				<input name="user.user_id" th:value="${reply.user.user_id}" 
+				<input name="user.user_id" th:value="${reply.user?.user_id}" 
 					type="text" class="form-control" readonly>
 			</p>
 			<div class="mb-1 d-flex justify-content-between align-items-center">
@@ -72,7 +72,7 @@
 			  						: 'bi-hand-thumbs-up'
 				    					}"
 				    	class="btn btn-sm btn-outline-primary rounded-pill bi " 
-				    	th:text="${reply.good_prefers?.size}"
+				    	th:text="${reply.good}"
 				    	th:href="|javascript:replyPreferHandler(${reply.reply_no},${reply.prefer_active},'good')|">
 				    </a>
 				    <span>/</span> 
@@ -83,7 +83,7 @@
 			  						: 'bi-hand-thumbs-down'
 				    					}"
 				    	class="btn btn-sm btn-outline-danger rounded-pill bi " 
-				    	th:text="${reply.bad_prefers?.size}" 
+				    	th:text="${reply.bad}" 
 				    	th:href="|javascript:replyPreferHandler( ${reply.reply_no},${reply.prefer_active},'bad')|">
 				    </a>
 				</div>						

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.acon.board.dto.Board;
 import com.acon.board.dto.BoardImg;
+import com.acon.board.dto.Paging;
 import com.acon.board.dto.Reply;
 import com.acon.board.mapper.BoardImgMapper;
 import com.acon.board.mapper.BoardMapper;
@@ -71,10 +72,11 @@ public class BoardService {
 		System.out.println("보드 이미지 등록 :"+imgRegist);
 		return regist;
 	}
-	
-	public Board readBoardUpdateViews(int boardNo)  throws Exception{
+
+	public Board readBoardUpdateViews(int boardNo,String loginUserId)  throws Exception{
 		boardMapper.updateViews(boardNo);
-		return boardMapper.selectOne(boardNo);
+		Board board=boardMapper.selectOne(boardNo,loginUserId);
+		return board;
 	}
 	//@Transactional : 함수 내부의 db 실행을 한 트랙젝션으로 보고 중간에 실패시 db 실행을 취소 (roll back);
 	@Transactional

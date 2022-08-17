@@ -119,10 +119,10 @@
 					토글
 				</button> 
 			</h2>
-			<ul class="list-group collapse show " data-limit='20' id="replyCollapse">
-				<li class="list-group-item text-bg-light border-success" 
-				th:if="${session.loginUser!=null}">
-<!--///////////////////////////////////// 리플 등록 폼 ///////////////////////////////////////////////////////////////// -->				
+			<div id="replyCollapse" class="list-group collapse show ">
+				<div class="list-group-item text-bg-light border-success" 
+					th:if="${session.loginUser!=null}">
+	<!--///////////////////////////////////// 리플 등록 폼 ///////////////////////////////////////////////////////////////// -->				
 					<form action="/reply/insert.do" method="post" enctype="multipart/form-data">
 						<p class="input-group input-group-sm mb-1">
 							<span class="input-group-text">글쓴이</span>
@@ -147,16 +147,10 @@
 							<input type="hidden" name="board_no" th:value="${board.board_no}">
 						</p>
 					</form>
-				</li>
-			
-				<th:block th:each="reply : ${board.replys}">
-			  		<li th:id="${'replyLi'+reply.reply_no}"
-			  			class="list-group-item"
-			  			th:insert="/board/replyDetail">		
-
-					</li>
-				</th:block>
-			</ul>
+				</div>
+				<div th:insert="/board/replyList" th:with="replys=${board.replys}" id="replyList">
+				</div>
+			</div>
 		</div>
 		
 	</main>

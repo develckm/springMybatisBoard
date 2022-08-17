@@ -23,13 +23,20 @@
 		<li>/board/detail.html : 댓글 출려시 /board/replyDetail.html을 반복 출력하는 것으로 변경</li>
 		<li>/public/js/board/detail.js : 댓글 좋아요 성공시 alert에서 부트스트랩 모달로 변경</li>
 	</ul>
+	<h2> 220817_interceptor</h2>
+	<ul>
+		<li>/user/**,/board/** 에 LoginCheckInterceptor 추가 </li>
+		<li>(exclude: /user/login.do,singup.do, /board/list/**,detail.**)</li>
+	</ul>
 	<h2> 220817_reply_prefer_paging</h2>
 	<ul>
+		<li></li>
 		<li>Board가 Reply과 1:n reply과 reply_prefer이 1:n 조인을 하고 있어서 paging이 불가능 </li>
 		<li>Board detail 호출시 Reply List를 따로 호출하는 것으로 변경</li>
-		<li>Reply과 reply_prefer을 조인하지 않고 서브쿼리로 수만 확인</li>
-		<li></li>
-		
+		<li>Reply과 reply_prefer을 조인하지 않고 서브쿼리로 좋아요 싫어요 수 가져온다.</li>
+		<li>Reply List를 따로 호출할 때 로그인 한 사람이 있다면 서브쿼리로 로그인한 유저의 아이디와 댓글번호로 좋아요 싫어요 했는지 확인(prefer_active)</li>
+		<li>Board detail 호출 시 로그인 한 사람의 좋아요 싫어요 내역을 따로 호출했는데 서브쿼리로 변경 (board.prefer_active 추가)</li>
+		<li>replyMapper.selectBoardNoPage : 보드 detail 조회시 댓글 리스 호출 </li>
 	</ul>
 </body>
 </html>

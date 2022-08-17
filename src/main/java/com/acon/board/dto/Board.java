@@ -28,8 +28,9 @@ public class Board {
 	private String contents;  
 	@DateTimeFormat(pattern="yyyy-MM-dd hh:mm:ss")
 	private Date post_time; 
-	private int good;      
-	private int bad;       
+	private int good;      //board_prefer에 좋아요 수 
+	private int bad;      //board_prefer에 싫어요 수 
+	private Boolean prefer_active; //해당 보드를 검색하는 로그인한 유저가 좋아요 싫어요를 했는지 (null:안함,true:좋아요,false:싫어요)
 	private int views;     
 
 	private User user;//N:1  fk user_id 

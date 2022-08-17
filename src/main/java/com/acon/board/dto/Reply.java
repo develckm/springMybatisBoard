@@ -37,8 +37,6 @@ public class Reply {
 	
 	private User user;//fk user_id  
 	private Boolean prefer_active=null; //null : 누른적이 없는 , true: good을 누른 것, false: bad를 누른 것
-	private List<ReplyPrefer> good_prefers;
-	private List<ReplyPrefer> bad_prefers;
 
 	
 }

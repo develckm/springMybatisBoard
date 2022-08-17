@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<ul class="list-group">
+		
+		<th:block th:each="reply : ${replys}">
+	  		<li th:id="${'replyLi'+reply.reply_no}"
+	  			class="list-group-item"
+	  			th:insert="/board/replyDetail">		
+
+			</li>
+		</th:block>
+	</ul>
+	<div class="m-2 d-flex justify-content-center" 
+		th:insert="/pagingAjax" >
+	</div>	
+</html>

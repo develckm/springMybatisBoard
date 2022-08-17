@@ -9,7 +9,10 @@
 		<result column="post_time" property="post_time"/>
 		<result column="prefer_good" property="good"/>
 		<result column="prefer_bad" property="bad"/>
+		<result column="prefer_active" property="prefer_active"/>
+		
 		<result column="views" property="views"/>
+		
 		<result column="replys_size" property="replys_size"/>
 	
 		<!-- Board : User = N : 1   User user-->
@@ -20,36 +23,6 @@
 			<result column="birth" property="birth"/>
 		</association>
 		<!-- Board : Reply =  1 : N   ArrayLust<Reply> replys -->
-		<collection property="replys" javaType="java.util.ArrayList" ofType="Reply" >
-			<id column="reply_no" property="reply_no"/>
-			<result column="reply_board_no" property="board_no"/>
-			
-			<result column="reply_title" property="title"/>
-			<result column="reply_contents" property="contents"/>
-			<result column="reply_post_time" property="post_time"/>
-			<result column="reply_good" property="good"/>
-			<result column="reply_bad" property="bad"/>
-			<result column="reply_img_path" property="img_path"/>
-			<association property="user" javaType="User">
-				<id column="reply_user_id" property="user_id"/>
-			</association>
-			<collection property="good_prefers" ofType="ReplyPrefer" javaType="java.util.ArrayList">
-				<id column="rp_good_reply_prefer_no"  property="reply_prefer_no"/>
-				<result column="rp_good_user_id" property="user_id"/>
-				<result column="rp_good_reply_no" property="reply_no"/>
-				<result column="rp_good_prefer" property="prefer" />
-			</collection>
-			
-			<collection property="bad_prefers" ofType="ReplyPrefer" javaType="java.util.ArrayList">
-				<id column="rp_bad_reply_prefer_no"  property="reply_prefer_no"/>
-				<result column="rp_bad_user_id" property="user_id"/>
-				<result column="rp_bad_reply_no" property="reply_no"/>
-				<result column="rp_bad_prefer" property="prefer" />
-			</collection>
-			
-			
-			
-		</collection>
 		<collection property="boardImgs" javaType="java.util.ArrayList" ofType="BoardImg">
 			<id column="iboard_img_no" property="board_img_no"/>
 			<result column="iimg_path" property="img_path"/>
@@ -78,30 +51,18 @@
 		SELECT 
 			b.*,
 			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=true) prefer_good,
-			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=false) prefer_bad,			
-			u.user_id,u.name,u.email,u.birth,
-			r.reply_no,
-			r.board_no 		as reply_board_no,		
-			r.title 		as reply_title,
-			r.contents 		as reply_contents,
-			r.post_time 	as reply_post_time,
-			r.img_path 		as reply_img_path,
-			r.good 			as reply_good,
-			r.bad 			as reply_bad,
-			r.user_id 		as reply_user_id,
+			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=false) prefer_bad,
+			<if test="loginUserId!=null">
+				(SELECT prefer FROM BOARD_PREFER WHERE board_no=b.board_no AND user_id=#{loginUserId}) 	as prefer_active,
+			</if>
+						
+			u.user_id,
+			u.name,
+			u.email,
+			u.birth,
 			
 			i.board_img_no 	as iboard_img_no,
-			i.img_path 		as iimg_path,				
-			
-			rp_good.user_id 			as rp_good_user_id,
-			rp_good.reply_prefer_no 	as rp_good_reply_prefer_no,
-			rp_good.reply_no 			as rp_good_reply_no,
-			rp_good.prefer 				as rp_good_prefer,
-			
-			rp_bad.user_id 				as rp_bad_user_id,
-			rp_bad.reply_prefer_no 		as rp_bad_reply_prefer_no,
-			rp_bad.reply_no 			as rp_bad_reply_no,
-			rp_bad.prefer 				as rp_bad_prefer
+			i.img_path 		as iimg_path			
 			
 			FROM BOARD b INNER JOIN USER u
 			USING (user_id)		
@@ -112,17 +73,8 @@
 			LEFT JOIN REPLY r
 			USING (board_no)
 			
-			LEFT JOIN (SELECT * FROM REPLY_PREFER WHERE prefer=true) rp_good
-			ON r.reply_no=rp_good.reply_no
-			
-			LEFT JOIN (SELECT * FROM REPLY_PREFER WHERE prefer=false) rp_bad
-			ON r.reply_no=rp_bad.reply_no
-			
-			
 			WHERE b.board_no=#{boardNo}
 			ORDER BY reply_no DESC
-			
-			LIMIT 0,5
 	</select>
 	<!-- <update id="updateGood">
 		UPDATE BOARD SET 

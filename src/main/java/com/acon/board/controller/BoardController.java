@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.acon.board.dto.Board;
 import com.acon.board.dto.BoardImg;
 import com.acon.board.dto.BoardPrefer;
+import com.acon.board.dto.Paging;
 import com.acon.board.dto.Reply;
 import com.acon.board.dto.ReplyPrefer;
 import com.acon.board.dto.User;
@@ -60,7 +61,8 @@ public class BoardController {
 	
 	@Autowired
 	private BoardPreferMapper boardPreferMapper;
-	
+	@Autowired
+	private ReplyMapper replyMapper;
 	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
@@ -70,33 +72,34 @@ public class BoardController {
 		model.addAttribute(boardList);
 		return "/board/list";
 	}
-	@GetMapping("/detail/{boardNo}")
+	@GetMapping(value = {"/detail/{boardNo}"})
 	public String detail(
 			@PathVariable int boardNo,
+			@RequestParam( defaultValue = "1") int replyPage,
 			Model model,
 			@SessionAttribute(required = false) User loginUser) {
 		Board board=null;
 		BoardPrefer boardPrefer=null; //로그인 안되면 null
+		int row=5;
+		int startRow=(replyPage-1)*row;
+		String pagingUrl="/detail/"+boardNo+"/"+replyPage;
+		Paging paging = null;
+		String loginUserId=null;
 		try {
-			board = boardService.readBoardUpdateViews(boardNo);
 			if(loginUser!=null) {
-				boardPrefer=boardPreferMapper.selectUserIdBoardNo(loginUser.getUser_id(), boardNo);
-				//좋아요 싫어요를 1번도 안했으면 null
-				if(board.getReplys()!=null) {
-					for(Reply reply :board.getReplys()) {
-						for( ReplyPrefer prefer :reply.getGood_prefers()) {
-							if(prefer.getUser_id().equals(loginUser.getUser_id())) {
-								reply.setPrefer_active(true);
-							}
-						}
-						for( ReplyPrefer prefer :reply.getBad_prefers()) {
-							if(prefer.getUser_id().equals(loginUser.getUser_id())) {
-								reply.setPrefer_active(false);
-							}
-						}
-					}
-				}
+				loginUserId=loginUser.getUser_id();
 			}
+			board = boardService.readBoardUpdateViews(boardNo,loginUserId);
+			
+			int replysSize=replyMapper.selectBoardNoCount(boardNo);
+			if(replysSize>0) {
+				paging=new Paging(replyPage, replysSize, pagingUrl, row );
+				model.addAttribute("paging",paging);
+
+				List<Reply> replies=replyMapper.selectBoardNoPage(boardNo, startRow, row, loginUserId);
+				board.setReplys(replies);
+			}
+			
 		} catch (Exception e) {e.printStackTrace();}
 		
 		System.out.println(board);
