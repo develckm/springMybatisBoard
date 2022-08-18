@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.acon.board.dto.Paging;
 import com.acon.board.dto.Reply;
 import com.acon.board.dto.ReplyPrefer;
 import com.acon.board.dto.User;
@@ -38,6 +40,29 @@ public class ReplyController {
 	String savePath;
 	@Autowired
 	private ReplyPreferMapper replyPreferMapper;
+	
+	@RequestMapping("/list/{boardNo}/{page}")
+	public String list(
+			@PathVariable int boardNo,
+			@PathVariable int page,
+			@SessionAttribute(required = false) User loginUser,
+			Model model) {
+		int row=5;
+		int startRow=(page-1)*row;
+		String url="/reply/list/"+boardNo;
+		List<Reply> replys=null;
+		String loginUserId=(loginUser!=null)?loginUser.getUser_id() : null;
+		try {
+			int rowCount=replyMapper.selectBoardNoCount(boardNo);
+			Paging paging=new Paging(page, rowCount, url, row);
+			replys=replyMapper.selectBoardNoPage(boardNo, startRow, row, loginUserId);
+			model.addAttribute("paging", paging);
+			model.addAttribute("replys", replys);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return "/board/replyList";
+	}
 	
 	@PostMapping("/insert.do")
 	public String insert

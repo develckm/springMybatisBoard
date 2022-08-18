@@ -30,13 +30,29 @@
 	</ul>
 	<h2> 220817_reply_prefer_paging</h2>
 	<ul>
-		<li></li>
 		<li>Board가 Reply과 1:n reply과 reply_prefer이 1:n 조인을 하고 있어서 paging이 불가능 </li>
 		<li>Board detail 호출시 Reply List를 따로 호출하는 것으로 변경</li>
 		<li>Reply과 reply_prefer을 조인하지 않고 서브쿼리로 좋아요 싫어요 수 가져온다.</li>
 		<li>Reply List를 따로 호출할 때 로그인 한 사람이 있다면 서브쿼리로 로그인한 유저의 아이디와 댓글번호로 좋아요 싫어요 했는지 확인(prefer_active)</li>
 		<li>Board detail 호출 시 로그인 한 사람의 좋아요 싫어요 내역을 따로 호출했는데 서브쿼리로 변경 (board.prefer_active 추가)</li>
 		<li>replyMapper.selectBoardNoPage : 보드 detail 조회시 댓글 리스 호출 </li>
+		<li>/board/detail.html의 댓글리스트를 분리해서 /board/replyList.html 생성 (ajax로 댓글 리스트 호출시 불러올 page) </li>
+	</ul>
+	<h2> 220818_reply_prefer_ajax_paging</h2>
+	<ul>
+		<li>BoardControler.selectOne() "/detail/{boardNo}?replyPage=1"에 replyPage 파라미터 추가 (댓글 페이징)</li>
+		<li>/board/replyList.html 에 /public/board/replyList.js 생성 및 추가</li>
+		<li>replyList.js 에서 /ajaxPaging.html의 페이징 a 태그에 ajax 이벤트 추가</li>
+		<li>ReplyControler.list() "/list/{boardNo}/{page}" 추가 : ajax로 보드에 작성한 댓글 리스트만 호출</li>
+		<li>replyMapper.selectBoardNoPage : 보드에 작성한 댓글 리스트를 db에 호출</li>
+	</ul>
+	<h2> 220818_board_prefer</h2>
+	<ul>
+		<li>/board/detail.html 의 좋아요 싫어요가 3개 버전(등록 수정 삭제)이 있어 유지 보수를 위해 1개로 줄임</li>
+		<li>BoardController 의 preferInsert(),preferUdate(),preferDetele() 를 삭제하고 preferModify() 하나에서 처리</li>
+		<li>BoardController.preferModify() "/prefer/{boardNo}/{prefer}" 에서 insert,update,delete 구분은 db 검색해서 처리 </li>
+		<li>boardMapper의 insertOne(),updateOne(),deleteOne()의 매개변수를 BoardPrefer로 통일하고 update와 delete의 조건을 user_id와 board_no으로 수정 (유니크)</li>
+		
 	</ul>
 </body>
 </html>

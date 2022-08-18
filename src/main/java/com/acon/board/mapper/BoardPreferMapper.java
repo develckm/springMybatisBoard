@@ -9,7 +9,7 @@ import com.acon.board.dto.BoardPrefer;
 public interface BoardPreferMapper {
 	BoardPrefer selectUserIdBoardNo(String userId,int boardNo);
 	int insertOne (BoardPrefer boardPrefer);
-	int updateOne (boolean prefer,int boardPreferNo);
-	int deleteOne (int boardPreferNo);
+	int updateOne (BoardPrefer boardPrefer);
+	int deleteOne (BoardPrefer boardPrefer);
 
 }

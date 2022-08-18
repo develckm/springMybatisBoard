@@ -10,8 +10,6 @@ public class Paging {
 	private int rowCount; //총 row 수
 	private String url;
 	private int row=10; //1페이지당 출력될 row 수
-
-	private int startRow; //mysql  : limit startRow,row;
 	
 	private int start; //화면에 출력될 페이지의 시작
 	private int end; //화면에 출력될 페이지의 마지막
@@ -38,7 +36,6 @@ public class Paging {
 		this.setAll();
 	}
 	public void setAll() {
-		this.startRow=(page-1)*this.row;
 		this.lastPage=rowCount/row+((rowCount%row>0)?1:0);
 		this.previousPage=page-1;
 		this.nextPage=page+1;

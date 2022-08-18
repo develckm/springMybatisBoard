@@ -4,18 +4,18 @@
   <ul class="pagination" id="pageAjax">
     <li class="page-item" th:classappend="${(paging.isFirst)?'':'disabled'}">
       <a class="page-link" 
-      	href="javascipt:void(0)" 
+      	href="javascript:void(0)" 
       	th:data-url="${paging.url}"
-      	th:page="${paging.firstPage}"
+      	th:data-page="${paging.firstPage}"
       	aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     <li class="page-item" th:classappend="${(paging.isPrevious)?'':'disabled'}">
       <a class="page-link" 
-       	href="javascipt:void(0)" 
+       	href="javascript:void(0)" 
       	th:data-url="${paging.url}"
-      	th:page="${paging.previousPage}"
+      	th:data-page="${paging.previousPage}"
       >
       	Prev
       </a>
@@ -24,18 +24,18 @@
     <th:block th:each="n:${#numbers.sequence(paging.start,paging.end)}">
 	    <li class="page-item" th:classappend="${(paging.page==n)?'active':''}">
 	    	<a class="page-link"
-	    	href="javascipt:void(0)" 
+	    	href="javascript:void(0)" 
 	      	th:data-url="${paging.url}"
-	      	th:page="${n}"	
+	      	th:data-page="${n}"	
 	    	th:text="${n}"></a>
 	    </li>
     </th:block>
     
     <li class="page-item" th:classappend="${(paging.isNext)?'':'disabled'}">
       <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.nextPage})}"
-      	href="javascipt:void(0)" 
+      	href="javascript:void(0)" 
       	th:data-url="${paging.url}"
-      	th:page="${paging.nextPage}"	
+      	th:data-page="${paging.nextPage}"	
      
       >
       	Next
@@ -44,9 +44,9 @@
 
     <li class="page-item" th:classappend="${(paging.isLast)?'':'disabled'}">
       <a class="page-link" 
-      	href="javascipt:void(0)" 
+      	href="javascript:void(0)" 
 	   	th:data-url="${paging.url}"
-      	th:page="${paging.lastPage}"	
+      	th:data-page="${paging.lastPage}"	
       
       
       	 aria-label="Next">

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<script src="/public/js/board/replyList.js" defer="defer"></script>
 	<ul class="list-group">
 		
 		<th:block th:each="reply : ${replys}">
@@ -10,7 +11,8 @@
 			</li>
 		</th:block>
 	</ul>
+	
 	<div class="m-2 d-flex justify-content-center" 
-		th:insert="/pagingAjax" >
+		th:if="${(paging!=null)}" th:insert="/pagingAjax" >
 	</div>	
 </html>

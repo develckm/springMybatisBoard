@@ -10,9 +10,7 @@
 		<result column="prefer_good" property="good"/>
 		<result column="prefer_bad" property="bad"/>
 		<result column="prefer_active" property="prefer_active"/>
-		
-		<result column="views" property="views"/>
-		
+		<result column="views" property="views"/>	
 		<result column="replys_size" property="replys_size"/>
 	
 		<!-- Board : User = N : 1   User user-->
@@ -52,6 +50,7 @@
 			b.*,
 			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=true) prefer_good,
 			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=b.board_no AND prefer=false) prefer_bad,
+			
 			<if test="loginUserId!=null">
 				(SELECT prefer FROM BOARD_PREFER WHERE board_no=b.board_no AND user_id=#{loginUserId}) 	as prefer_active,
 			</if>
