@@ -52,7 +52,15 @@
 		<li>BoardController 의 preferInsert(),preferUdate(),preferDetele() 를 삭제하고 preferModify() 하나에서 처리</li>
 		<li>BoardController.preferModify() "/prefer/{boardNo}/{prefer}" 에서 insert,update,delete 구분은 db 검색해서 처리 </li>
 		<li>boardMapper의 insertOne(),updateOne(),deleteOne()의 매개변수를 BoardPrefer로 통일하고 update와 delete의 조건을 user_id와 board_no으로 수정 (유니크)</li>
-		
+	</ul>
+	
+		<h2> 220818_reply_prefer_ajax_paging</h2>
+	<ul>
+		<li>SPRING_BOARD.txt : board.good, bad 와  reply.good, bad 를 칼럼에서 삭제  </li>
+		<li>게시글 패이징 완료</li>
+		<li>서버가 브러우저에 저장하는 정보인 쿠키를 이용해 board.views 조회수 올리기 준비</li>
+		<li>쿠키는 유효기한이 있는 정보로 해당 브라우저에서 조회수를 올리 board_no 를 배열로 하루동안 저장한다. </li>
+		<li>만약 쿠키에 board_no이 있으면 조회수를 올리지 않고 없으면 조회수를 올린다. 그리고 하루가 되면 삭제되는 board_no을 쿠키로 생성한다.<li>
 	</ul>
 </body>
 </html>

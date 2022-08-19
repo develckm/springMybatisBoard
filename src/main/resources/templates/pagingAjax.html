@@ -32,7 +32,7 @@
     </th:block>
     
     <li class="page-item" th:classappend="${(paging.isNext)?'':'disabled'}">
-      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.nextPage})}"
+      <a class="page-link" 
       	href="javascript:void(0)" 
       	th:data-url="${paging.url}"
       	th:data-page="${paging.nextPage}"	

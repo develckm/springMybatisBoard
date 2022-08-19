@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +68,20 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	@GetMapping("/list/{page}")
-	public String list(@PathVariable int page,Model model,HttpServletRequest req) {
-		List<Board> boardList=boardMapper.selectPageAll();
+	public String list(
+			@PathVariable int page,
+			Model model) {
+		int row=7;
+		int startRow=(page-1)*row;
+		String pagingUrl="/board/list/";
+
+		int totalCount=boardMapper.selectPageAllCount();
+		Paging paging=new Paging(page, totalCount, pagingUrl, row);
+		List<Board> boardList=boardMapper.selectPageAll(startRow, row);
 		System.out.println(boardList);
-		model.addAttribute(boardList);
+		model.addAttribute("boardList",boardList);
+		model.addAttribute("paging",paging);
+
 		return "/board/list";
 	}
 	@GetMapping(value = {"/detail/{boardNo}"})
@@ -77,7 +89,9 @@ public class BoardController {
 			@PathVariable int boardNo,
 			Model model,
 			@SessionAttribute(required = false) User loginUser,
-			@RequestParam( defaultValue = "1") int replyPage) {
+			@RequestParam( defaultValue = "1") int replyPage, 
+			HttpServletRequest req, 
+			HttpServletResponse resp) {
 		Board board=null;
 		BoardPrefer boardPrefer=null; //로그인 안되면 null
 		int row=5;
@@ -85,6 +99,17 @@ public class BoardController {
 		String pagingUrl="/reply/list/"+boardNo;
 		Paging paging = null;
 		String loginUserId=null;
+		
+		Cookie[] cookies= req.getCookies(); //서버가 브라우저에 저장하는 문자열 정보 "board_no=3;"
+		Arrays.stream(cookies).forEach((c)->{
+			if(c.getName().equals("board_no") && c.getValue().equals(boardNo+"")) {
+				
+			}
+		});
+		
+		Cookie cookie=new Cookie("board_no", boardNo+"");
+		cookie.setMaxAge(60 * 60 * 24); //브라우저에서 쿠키를 유지할 시간
+		resp.addCookie(cookie);//서버가 브라우저에 전달하면 브라우저에 쿠키를 저장
 		try {
 			if(loginUser!=null) {
 				loginUserId=loginUser.getUser_id();

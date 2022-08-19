@@ -6,10 +6,15 @@
 </head>
 <body>
 	<header th:insert="headerNav"></header>
-	<main>
+	<main class="container">
 		<h1 class="m-3 d-flex justify-content-between align-items-center">게시글 리스트
 			<a href="/board/insert.do" class="btn btn-sm btn-primary">게시글 등록</a>
 		</h1>
+		<p>
+			페이지 : 
+			<span class="badge text-bg-success" th:text="${paging.page}"></span> /
+			<span class="badge text-bg-primary" th:text="${paging.rowCount}"></span>
+		</p>
 		
 		<table class="table table-hover">
 			<thead>
@@ -39,7 +44,8 @@
 				</th:block>
 			</tbody>
 		</table>
-		
+		<div class="d-flex justify-content-center" 
+			th:insert="/paging"></div>
 		
 	</main>
 	

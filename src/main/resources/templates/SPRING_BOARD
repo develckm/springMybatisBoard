@@ -20,6 +20,69 @@ CREATE TABLE USER(
 	CONSTRAINT UNIQUE(phone),
 	CONSTRAINT UNIQUE(email)
 );
+
+CREATE TABLE BOARD(
+	board_no INT AUTO_INCREMENT,
+	title VARCHAR(255) NOT NULL,
+	contents VARCHAR(255) DEFAULT '',
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP(),
+	user_id VARCHAR(255) NOT NULL,
+	views INT  NOT NULL DEFAULT 0 ,
+	PRIMARY KEY(board_no),
+	FOREIGN KEY(user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE BOARD_IMG(
+	board_img_no INT AUTO_INCREMENT,
+	board_no INT NOT NULL,
+	img_path VARCHAR(255) NOT NULL,
+	PRIMARY KEY(board_img_no),
+	FOREIGN KEY(board_no) REFERENCES BOARD(board_no)
+	ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE REPLY(
+	reply_no INT AUTO_INCREMENT,
+	title VARCHAR(255) NOT NULL,
+	contents VARCHAR(255) DEFAULT '',
+	post_time DATETIME DEFAULT CURRENT_TIMESTAMP(),
+	img_path VARCHAR(255),
+	
+	board_no INT NOT NULL,
+	user_id VARCHAR(255) NOT NULL,
+	
+	PRIMARY KEY(reply_no),
+	FOREIGN KEY(user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(board_no) REFERENCES BOARD(board_no)
+	ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE BOARD_PREFER(
+	board_prefer_no INT AUTO_INCREMENT,
+	board_no INT NOT NULL,
+	prefer BOOLEAN,
+	user_id VARCHAR(255) NOT NULL,
+	PRIMARY KEY (board_prefer_no),
+	FOREIGN KEY (user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (board_no) REFERENCES BOARD(board_no)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE KEY (board_no,user_id)
+);
+
+CREATE TABLE REPLY_PREFER(
+	reply_prefer_no INT AUTO_INCREMENT,
+	reply_no INT NOT NULL,
+	prefer BOOLEAN,
+	user_id VARCHAR(255) NOT NULL,
+	PRIMARY KEY (reply_prefer_no),
+	FOREIGN KEY (user_id) REFERENCES USER(user_id)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (reply_no) REFERENCES REPLY(reply_no)
+	ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE KEY (reply_no,user_id)
+);
 INSERT INTO USER (user_id,name,pw,phone,email,birth) VALUES 
 ('user1','유저1','1234','000-0000-0001','user1@gmail.com','1990-01-01'),
 ('user2','유저2','1234','000-0000-0002','user2@gmail.com','1990-02-01'),
@@ -75,47 +138,6 @@ INSERT INTO USER (user_id,name,pw,phone,email,birth) VALUES
 ('user163','아스키아','1234','000-6600-0000','user22@test.com','1995-01-09'),
 ('user164','젠네','1234','000-0098-0000','user23@test.com','1996-01-09');
 
-CREATE TABLE BOARD(
-	board_no INT AUTO_INCREMENT,
-	title VARCHAR(255) NOT NULL,
-	contents VARCHAR(255) DEFAULT '',
-	post_time DATETIME DEFAULT CURRENT_TIMESTAMP(),
-	user_id VARCHAR(255) NOT NULL,
-	good INT NOT NULL DEFAULT 0 ,
-	bad INT  NOT NULL DEFAULT 0 ,
-	views INT  NOT NULL DEFAULT 0 ,
-	PRIMARY KEY(board_no),
-	FOREIGN KEY(user_id) REFERENCES USER(user_id)
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE BOARD_IMG(
-	board_img_no INT AUTO_INCREMENT,
-	board_no INT NOT NULL,
-	img_path VARCHAR(255) NOT NULL,
-	PRIMARY KEY(board_img_no),
-	FOREIGN KEY(board_no) REFERENCES BOARD(board_no)
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE REPLY(
-	reply_no INT AUTO_INCREMENT,
-	title VARCHAR(255) NOT NULL,
-	contents VARCHAR(255) DEFAULT '',
-	post_time DATETIME DEFAULT CURRENT_TIMESTAMP(),
-	img_path VARCHAR(255),
-	good INT NOT NULL DEFAULT 0 ,
-	bad INT  NOT NULL DEFAULT 0 ,
-	
-	board_no INT NOT NULL,
-	user_id VARCHAR(255) NOT NULL,
-	
-	PRIMARY KEY(reply_no),
-	FOREIGN KEY(user_id) REFERENCES USER(user_id)
-	ON UPDATE CASCADE ON DELETE CASCADE,
-	FOREIGN KEY(board_no) REFERENCES BOARD(board_no)
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
 
 INSERT INTO USER (user_id,name,pw,phone,email,birth) VALUES 
 ('awriter','글쓴이','1234','011-7777-7777','awriter@gmail.com','1990-01-01');
@@ -124,6 +146,24 @@ INSERT INTO BOARD (title,contents,user_id) VALUES
 ('awriter 가 쓴 1번 글입니다.','글내용입니다.','awriter'),
 ('awriter 가 쓴 2번 글입니다.','글내용입니다.','awriter'),
 ('awriter 가 쓴 3번 글입니다.','글내용입니다.','awriter'),
+('user1 가 쓴 1번 글입니다.','글내용입니다.','user1'),
+('user1 가 쓴 2번 글입니다.','글내용입니다.','user1'),
+('user1 가 쓴 3번 글입니다.','글내용입니다.','user1'),
+('user2 가 쓴 1번 글입니다.','글내용입니다.','user2'),
+('user2 가 쓴 2번 글입니다.','글내용입니다.','user2'),
+('user2 가 쓴 3번 글입니다.','글내용입니다.','user2'),
+('user3 가 쓴 1번 글입니다.','글내용입니다.','user3'),
+('user3 가 쓴 2번 글입니다.','글내용입니다.','user3'),
+('user3 가 쓴 3번 글입니다.','글내용입니다.','user3'),
+('user4 가 쓴 1번 글입니다.','글내용입니다.','user4'),
+('user4 가 쓴 2번 글입니다.','글내용입니다.','user4'),
+('user4 가 쓴 3번 글입니다.','글내용입니다.','user4'),
+('user5 가 쓴 1번 글입니다.','글내용입니다.','user5'),
+('user5 가 쓴 2번 글입니다.','글내용입니다.','user5'),
+('user5 가 쓴 3번 글입니다.','글내용입니다.','user5'),
+('user6 가 쓴 1번 글입니다.','글내용입니다.','user6'),
+('user6 가 쓴 2번 글입니다.','글내용입니다.','user6'),
+('user6 가 쓴 3번 글입니다.','글내용입니다.','user6'),
 ('awriter 가 쓴 4번 글입니다.','글내용입니다.','awriter');
 
 INSERT INTO USER (user_id,name,pw,phone,email,birth) VALUES 
@@ -138,30 +178,8 @@ INSERT INTO REPLY (title,contents,user_id,board_no) VALUES
 ('a_reply_writer 가 쓴 5번 글입니다.','글내용입니다.','a_reply_writer',1),
 ('a_reply_writer 가 쓴 6번 글입니다.','글내용입니다.','a_reply_writer',1);
 
-CREATE TABLE BOARD_PREFER(
-	board_prefer_no INT AUTO_INCREMENT,
-	board_no INT NOT NULL,
-	prefer BOOLEAN,
-	user_id VARCHAR(255) NOT NULL,
-	PRIMARY KEY (board_prefer_no),
-	FOREIGN KEY (user_id) REFERENCES USER(user_id)
-	ON UPDATE CASCADE ON DELETE CASCADE,
-	FOREIGN KEY (board_no) REFERENCES BOARD(board_no)
-	ON UPDATE CASCADE ON DELETE CASCADE,
-	UNIQUE KEY (board_no,user_id)
-);
-CREATE TABLE REPLY_PREFER(
-	reply_prefer_no INT AUTO_INCREMENT,
-	reply_no INT NOT NULL,
-	prefer BOOLEAN,
-	user_id VARCHAR(255) NOT NULL,
-	PRIMARY KEY (reply_prefer_no),
-	FOREIGN KEY (user_id) REFERENCES USER(user_id)
-	ON UPDATE CASCADE ON DELETE CASCADE,
-	FOREIGN KEY (reply_no) REFERENCES REPLY(reply_no)
-	ON UPDATE CASCADE ON DELETE CASCADE,
-	UNIQUE KEY (reply_no,user_id)
-);
+
+
 INSERT INTO REPLY_PREFER (reply_no, user_id, prefer)
 VALUES ( 6, 'user1',true),
  ( 6, 'user2',true ),
@@ -189,10 +207,8 @@ VALUES ( 1, 'user1',true),
  ( 1, 'user4',true ),
  ( 1, 'user5',true ),
  ( 2, 'user5',true ),
- ( 2, 'user6',true );
-
-INSERT INTO BOARD_PREFER (board_no, user_id, prefer)
-VALUES ( 1, 'user7',false),
+ ( 2, 'user6',true ),
+ ( 1, 'user7',false),
  ( 1, 'user8',false),
  ( 3, 'user1',false),
  ( 3, 'user2',false),
@@ -200,9 +216,11 @@ VALUES ( 1, 'user7',false),
  ( 3, 'user4',false),
  ( 3, 'user5',false),
  ( 3, 'user6',false);
+ 
 SELECT 
 	board_no no, 
 	title, 
-	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=true AND board_no=no ) goods,
-	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=false AND board_no=no ) bads
+	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=true AND board_no=no ) good,
+	(SELECT COUNT(*) FROM BOARD_PREFER WHERE prefer=false AND board_no=no ) bad,
+	(SELECT prefer FROM BOARD_PREFER WHERE board_no=no AND user_id='user1' ) '(user1)prefer_active'
 	FROM BOARD;
