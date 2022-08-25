@@ -36,30 +36,43 @@ public class Paging {
 		this.setAll();
 	}
 	public void setAll() {
-		this.lastPage=rowCount/row+((rowCount%row>0)?1:0);
-		this.previousPage=page-1;
-		this.nextPage=page+1;
-		
-		this.isFirst=(page>firstPage)?true:false;
-		this.isPrevious=(page>firstPage)?true:false;
-
-		this.isLast=(page<lastPage)?true:false;
-		this.isNext=(page<lastPage)?true:false;
-
-		
-		this.start=this.page-2; //(-1,0)
-		this.end=this.page+2;    //(lastPage+1,lastPage+2)
-		
-		if(this.start<firstPage) {
-			end=end-start+1;
-			if(end<lastPage) {start=lastPage;}
-			start=firstPage;
+		if(rowCount>0) {
+			this.lastPage=rowCount/row+((rowCount%row>0)?1:0);
+			this.previousPage=page-1;
+			this.nextPage=page+1;
+			
+			this.isFirst=(page>firstPage)?true:false;
+			this.isPrevious=(page>firstPage)?true:false;
+			
+			this.isLast=(page<lastPage)?true:false;
+			this.isNext=(page<lastPage)?true:false;
+			
+			
+			this.start=this.page-2; //(-1,0)
+			this.end=this.page+2;    //(lastPage+1,lastPage+2)
+			
+			if(this.start<firstPage) {
+				end=end-start+1;
+				if(end<lastPage) {start=lastPage;}
+				start=firstPage;
+			}
+			if(end>lastPage) {
+				start=start-end+lastPage;
+				if(start<firstPage) {start=firstPage;}
+				end=lastPage;
+			} 
+		}else {
+			this.end=1;
+			this.start=1;
+			this.firstPage=1;
+			this.lastPage=1;
+			this.nextPage=1;
+			this.previousPage=1;
+			this.isFirst=false;
+			this.isLast=false;
+			this.isNext=false;
+			this.isPrevious=false;
 		}
-		if(end>lastPage) {
-			start=start-end+lastPage;
-			if(start<firstPage) {start=firstPage;}
-			end=lastPage;
-		}	
 	}
 	
 }

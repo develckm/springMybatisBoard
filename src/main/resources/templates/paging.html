@@ -3,30 +3,30 @@
 <nav aria-label="Page navigation example">
   <ul class="pagination">
     <li class="page-item" th:classappend="${(paging.isFirst)?'':'disabled'}">
-      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.firstPage})}" aria-label="Previous">
+      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.firstPage},field=${param.field},search=${param.search})}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     <li class="page-item" th:classappend="${(paging.isPrevious)?'':'disabled'}">
-      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.previousPage})}">
+      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.previousPage},field=${param.field},search=${param.search})}">
       	Prev
       </a>
     </li>
     
     <th:block th:each="n:${#numbers.sequence(paging.start,paging.end)}">
 	    <li class="page-item" th:classappend="${(paging.page==n)?'active':''}">
-	    	<a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${n})}" th:text="${n}"></a>
+	    	<a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${n},field=${param.field},search=${param.search})}" th:text="${n}"></a>
 	    </li>
     </th:block>
     
     <li class="page-item" th:classappend="${(paging.isNext)?'':'disabled'}">
-      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.nextPage})}">
+      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.nextPage},field=${param.field},search=${param.search})}">
       	Next
       </a>
     </li>
 
     <li class="page-item" th:classappend="${(paging.isLast)?'':'disabled'}">
-      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.lastPage})}" aria-label="Next">
+      <a class="page-link" th:href="@{{url}{page}(url=${paging.url},page=${paging.lastPage},field=${param.field},search=${param.search})}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

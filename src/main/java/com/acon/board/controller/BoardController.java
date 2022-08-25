@@ -85,8 +85,8 @@ public class BoardController {
 			totalCount=boardMapper.selectPageAllCount(field,search);
 
 		}else {
-			boardList=boardMapper.selectPageAll(startRow, row , null, null);			
-			totalCount=boardMapper.selectPageAllCount(null,null);
+			boardList=boardMapper.selectPageAll(startRow, row );			
+			totalCount=boardMapper.selectPageAllCount();
 		}
 		Paging paging=new Paging(page, totalCount, pagingUrl, row);
 		
@@ -111,17 +111,17 @@ public class BoardController {
 		String pagingUrl="/reply/list/"+boardNo;
 		Paging paging = null;
 		String loginUserId=null;
-		
-		Cookie[] cookies= req.getCookies(); //서버가 브라우저에 저장하는 문자열 정보 "board_no=3;"
-		Arrays.stream(cookies).forEach((c)->{
-			if(c.getName().equals("board_no") && c.getValue().equals(boardNo+"")) {
-				
-			}
-		});
-		
-		Cookie cookie=new Cookie("board_no", boardNo+"");
-		cookie.setMaxAge(60 * 60 * 24); //브라우저에서 쿠키를 유지할 시간
-		resp.addCookie(cookie);//서버가 브라우저에 전달하면 브라우저에 쿠키를 저장
+//		
+//		Cookie[] cookies= req.getCookies(); //서버가 브라우저에 저장하는 문자열 정보 "board_no=3;"
+//		Arrays.stream(cookies).forEach((c)->{
+//			if(c.getName().equals("board_no") && c.getValue().equals(boardNo+"")) {
+//				
+//			}
+//		});
+//		
+//		Cookie cookie=new Cookie("board_no", boardNo+"");
+//		cookie.setMaxAge(60 * 60 * 24); //브라우저에서 쿠키를 유지할 시간
+//		resp.addCookie(cookie);//서버가 브라우저에 전달하면 브라우저에 쿠키를 저장
 		try {
 			if(loginUser!=null) {
 				loginUserId=loginUser.getUser_id();
