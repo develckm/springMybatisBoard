@@ -15,6 +15,23 @@
 			<span class="badge text-bg-success" th:text="${paging.page}"></span> /
 			<span class="badge text-bg-primary" th:text="${paging.rowCount}"></span>
 		</p>
+		<nav class="navbar m-3">
+		  <div class="container-fluid justify-content-center">
+		    <form th:action="@{./1}" class="d-flex" role="search">
+		      <select class="form-control me-2" name="field" style="width: 120px">
+		      	<option th:selected="${#strings.equals(param.field,'board_no')}" value="board_no">글번호</option>
+		      	<option th:selected="${#strings.equals(param.field,'user_id')}" value="user_id">글쓴이</option>
+		      	<option th:selected="${#strings.equals(param.field,'title')}" value="title">제목</option>
+		      	<option th:selected="${#strings.equals(param.field,'contents')}" value="contents">내용</option>
+		      	<option th:selected="${#strings.equals(param.field,'post_time')}" value="post_time">작성일</option>
+		      </select>
+		      <input class="form-control me-2"  size="20"
+		      	th:value="${param.search}" name="search"
+		      	type="search" placeholder="Search" aria-label="Search">
+		      <button class="btn btn-outline-success" type="submit">Search</button>
+		    </form>
+		  </div>
+		</nav>
 		
 		<table class="table table-hover">
 			<thead>

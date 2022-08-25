@@ -43,11 +43,18 @@
 			(SELECT COUNT(*) FROM BOARD_PREFER WHERE board_no=no AND prefer=false) bad,			
 			user_id as 'user.user_id'
 			FROM BOARD 
+			<!-- #{}-> value : 'a', 13 , ${} -> 칼럼명 : title   -->
+			<if test="field!=null">
+				WHERE ${field} like CONCAT('%', #{search} ,'%') 
+			</if>
 			ORDER BY board_no
 			LIMIT #{startRow},#{pageSize}
 	</select>
 	<select id="selectPageAllCount"  resultType="int">
 		SELECT COUNT(*)	FROM BOARD
+		<if test="field!=null">
+			WHERE ${field} like CONCAT('%', #{search} ,'%') 
+		</if>
 	</select>
 	
 	

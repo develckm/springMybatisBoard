@@ -70,14 +70,26 @@ public class BoardController {
 	@GetMapping("/list/{page}")
 	public String list(
 			@PathVariable int page,
+			@RequestParam(required = false) String field,
+			@RequestParam(required = false) String search,
 			Model model) {
 		int row=7;
 		int startRow=(page-1)*row;
 		String pagingUrl="/board/list/";
 
-		int totalCount=boardMapper.selectPageAllCount();
+		int totalCount=0;
+		List<Board> boardList=null;
+		if(field!=null && !field.equals("")) {
+			System.out.println(field+"/"+search);
+			boardList=boardMapper.selectPageAll(startRow, row , field, search);			
+			totalCount=boardMapper.selectPageAllCount(field,search);
+
+		}else {
+			boardList=boardMapper.selectPageAll(startRow, row , null, null);			
+			totalCount=boardMapper.selectPageAllCount(null,null);
+		}
 		Paging paging=new Paging(page, totalCount, pagingUrl, row);
-		List<Board> boardList=boardMapper.selectPageAll(startRow, row);
+		
 		System.out.println(boardList);
 		model.addAttribute("boardList",boardList);
 		model.addAttribute("paging",paging);

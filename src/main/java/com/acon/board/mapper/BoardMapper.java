@@ -12,7 +12,10 @@ import com.acon.board.dto.Board;
 public interface BoardMapper {
 	//질의어 SELECT 의 결과는 무조건 복수지만 Mybatis가 단수로도 반환해준다.
 	List<Board>	selectPageAll(int startRow,int pageSize);
+	List<Board>	selectPageAll(int startRow,int pageSize, String field, String search);
+
 	int	selectPageAllCount();
+	int	selectPageAllCount( String field, String search);
 
 	Board selectOne(int boardNo);
 	Board selectOne(int boardNo,String loginUserId);//loginUserId 로그인한 유저가 좋아요 싫어요를 했는지 확인
