@@ -85,8 +85,8 @@ public class BoardController {
 			totalCount=boardMapper.selectPageAllCount(field,search);
 
 		}else {
-			boardList=boardMapper.selectPageAll(startRow, row );			
-			totalCount=boardMapper.selectPageAllCount();
+			boardList=boardMapper.selectPageAll(startRow, row, null,null );			
+			totalCount=boardMapper.selectPageAllCount(null,null);
 		}
 		Paging paging=new Paging(page, totalCount, pagingUrl, row);
 		
